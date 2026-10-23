@@ -1,132 +1,155 @@
-# 🚀 Machine_Learning_Backend: Đồ án Học máy (Machine Learning) - Thầy Trần Duy Thanh
+# 🚀 Retail SKU-Week Demand Forecasting & Inventory Planning Platform
 
-Hệ thống Backend RESTful API & Ứng dụng Học máy phục vụ đồ án môn **Học máy (Machine Learning)** - Thầy Trần Duy Thanh (Lớp sáng thứ 4).  
-Dữ liệu sử dụng: **Online Retail II** (UCI Machine Learning Repository) với hơn 1.06 triệu dòng giao dịch được chuẩn hóa.
+Hệ thống Học máy (Machine Learning) toàn diện phục vụ **Dự báo Nhu cầu SKU-Tuần** và **Hoạch định Bổ sung Tồn kho Bán lẻ** trên tập dữ liệu chuẩn hóa **UCI Online Retail II** (2,785 mặt hàng merchandise, 106 tuần lịch sử).
 
-Dự án gồm 2 phân hệ cốt lõi hoàn chỉnh:
-1. **Phân hệ 1 (Customer Analytics & Segmentation)**: Quản lý CSDL MySQL, phân tích KPIs kinh doanh, phân khúc khách hàng RFM K-Means & gợi ý sản phẩm giỏ hàng (Market Basket Analysis) với Demo Client PyQt6.
-2. **Phân hệ 2 (Demand Forecasting & Replenishment Planning)**: Hệ thống dự báo nhu cầu SKU-Tuần quy mô 2,785 mặt hàng bằng CatBoost, TiDE Sequence, LightGBM, mô phỏng bổ sung tồn kho (R, S), bảo mật phiên làm việc chuẩn NIST/OWASP RBAC và giao diện Web SPA React + Vite tích hợp sẵn.
+Dự án bao gồm toàn bộ chuỗi giá trị MLOps: từ kỹ thuật xử lý dữ liệu chống rò rỉ (no leakage), huấn luyện mô hình cây boosting và mạng nơ-ron chuỗi thời gian sâu (Deep Sequence), đóng băng mô hình vô địch (Model Freeze), đến Backend API kiến trúc vi dịch vụ (Microservices-ready) bảo mật RBAC và giao diện Web SPA React hiện đại.
 
 ---
 
-## 📌 1. Tổng quan Kiến trúc Toàn diện
+## 📌 1. Kiến trúc Hệ thống Toàn diện
 
 ```
-                        ┌──────────────────────────────────────┐
-                        │      Online Retail II (UCI ML)       │
-                        │    1,067,371 Raw Transaction Rows    │
-                        └──────────────────┬───────────────────┘
-                                           │
-             ┌─────────────────────────────┴─────────────────────────────┐
-             ▼                                                           ▼
-┌─────────────────────────────────────────┐ ┌─────────────────────────────────────────┐
-│ PHÂN HỆ 1: Phân khúc Khách hàng & KPIs  │ │ PHÂN HỆ 2: Dự báo Nhu cầu & Tồn kho     │
-│ (app/ + examples/pyqt6_client_demo.py)  │ │ (src/ + frontend/)                      │
-├─────────────────────────────────────────┤ ├─────────────────────────────────────────┤
-│ • MySQL Database Server (InnoDB)        │ │ • Weekly SKU Panel Matrix (2,785 SKUs)  │
-│ • Analytics Service (Revenue, KPIs)     │ │ • CatBoost MAE Champion (WAPE 65.57%)   │
-│ • RFM Extraction & K-Means Clustering   │ │ • TiDE Deep Sequence (WAPE 65.83%)      │
-│ • Market Basket Analysis (Apriori/MBA)  │ │ • Periodic-Review Replenishment (R, S)  │
-│ • PyQt6 Desktop GUI Client Application  │ │ • Modern React + Vite SPA (Mounted)     │
-│ • FastAPI Backend (app/main.py)         │ │ • FastAPI Engine with RBAC (src/api)    │
-└─────────────────────────────────────────┘ └─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          WEB CLIENT APPLICATION                             │
+│       React 18 + TypeScript + Vite + Glassmorphism UI (Mounted on /)        │
+│  (Dashboard · Forecast Studio · SKU Explorer · Leaderboard · Registry · RBAC)│
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ HTTP / JSON (RESTful API)
+                                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       FASTAPI BACKEND SERVICE (PORT 8000)                   │
+│  ├── Auth & RBAC Service (PBKDF2-HMAC-SHA256, 600k iter, JWT Bearer Token)  │
+│  ├── Forecasting Service (Vectorized Rolling Inference H=1..4)              │
+│  ├── Model Registry (Audited Artifacts, SHA-256 Hashes, Frozen Horizons)    │
+│  ├── SKU Explorer Catalog Service (ABC/XYZ/SBC Classification, 2,785 items) │
+│  ├── Replenishment Simulator (Periodic-Review (R, S) Order Quantity)        │
+│  └── Persistence & Audit Service (Thread-Safe SQLite3, CSV/XLSX Exporter)   │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │ Model Inference & Panel Data
+                                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         FROZEN MODEL ARTIFACTS & DATA                       │
+│  ├── Primary Champion: CatBoost MAE (Holdout Cum H=4 WAPE: 65.57%, MAE: 22.21)│
+│  ├── Diagnostic Deep: TiDE Sequence v1 (Holdout Cum H=4 WAPE: 65.83%)       │
+│  ├── Diagnostic Low-Bias: CatBoost Tweedie p=1.5 (Holdout Bias: +1.61%)     │
+│  ├── Tree Benchmark: LightGBM Regression L1 (Pooled OOF WAPE: 66.29%)       │
+│  ├── Deep Benchmark: Temporal Fusion Transformer (TFT_Sequence_v1)          │
+│  └── Panel Demand Data: 2,785 Qualified SKUs × 96 Development Weeks         │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📁 2. Cấu trúc Thư mục Dự án
+## 📊 2. Kết quả Đánh giá Mô hình Thực tế (Ground-Truth Leaderboard)
+
+Toàn bộ số liệu dưới đây được trích xuất trực tiếp từ các file kết quả vật lý đã đóng băng:
+* `artifacts/tables/phase8_holdout_metrics.csv`
+* `artifacts/tables/phase_06_2_metrics_pooled_oof.csv`
+
+### Bảng 1: Kiểm định Tập Độc lập (Final Holdout — 8 tuần: 2011-10-10 đến 2011-11-28)
+*Đánh giá tích lũy horizon $H=4$ tuần (Cumulative $H=4$), 22,280 lượt dự báo:*
+
+| Mô hình | Vai trò kỹ thuật | WAPE (%) | MAE (Units) | RMSE | Signed Bias (%) | Trạng thái Nghiệm thu |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **CatBoost MAE** | **Primary Champion** | **65.57%** | **22.21** | **101.00** | **-30.87%** | ✅ **SERVING READY** |
+| **TiDE Sequence v1** | Direct Deep Sequence | **65.83%** | **22.30** | **99.27** | **-28.96%** | ✅ **SERVING READY** |
+| **CatBoost Tweedie** | Low-Bias Diagnostic | **73.88%** | **25.03** | **96.26** | **+1.61%** | ✅ **SERVING READY** |
+| **MA_4** | Statistical Moving Avg | **76.46%** | **25.90** | **99.55** | **+1.81%** | ⚪ Baseline Reference |
+| **Naive_1** | Last-Week Persistence | **101.11%** | **34.25** | **146.41** | **+16.27%** | ⚪ Baseline Reference |
+
+### Bảng 2: Thẩm định Out-of-Fold 5-Fold Cross Validation (Pooled OOF Folds 1–5, 96 tuần)
+*Đánh giá rolling trên 68,680 quan sát nhóm Causal Mature:*
+
+| Mô hình | Nhóm thuật toán | WAPE (%) | MAE (Units) | RMSE | Signed Bias (%) |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **CatBoost MAE** | Gradient Boosting (L1) | **66.16%** | **19.51** | **81.36** | **-39.26%** |
+| **LightGBM L1** | Gradient Boosting (L1) | **66.29%** | **19.55** | **81.06** | **-41.47%** |
+| **TiDE Sequence** | Deep Linear MLP Multi-Horizon | **67.71%** | **19.97** | **80.62** | **-36.79%** |
+| **TFT Sequence** | Temporal Fusion Transformer | **69.14%** | **20.39** | **82.10** | **-39.21%** |
+| **CatBoost Tweedie** | Compound Poisson-Gamma ($p=1.5$) | **73.51%** | **21.68** | **77.73** | **-5.02%** |
+| **MA_4** | Statistical Baseline (4 tuần) | **76.75%** | **22.63** | **82.78** | **-4.12%** |
+| **Naive_1** | Statistical Baseline (1 tuần) | **88.84%** | **26.20** | **102.85** | **-3.34%** |
+
+---
+
+## 📁 3. Cấu trúc Thư mục Dự án
 
 ```
 Machine_Learning_Backend/
-├── app/                                # [PHÂN HỆ 1] Backend Phân khúc & Phân tích
-│   ├── config.py                       # Cấu hình môi trường & kết nối MySQL
-│   ├── database.py                     # Connection Pool & truy vấn MySQL
-│   ├── main.py                         # FastAPI App cho Phân hệ 1
-│   ├── models/schemas.py               # Pydantic schemas cho KPIs & RFM
-│   ├── routers/                        # Analytics, Segmentation, Recommendation, Retail
-│   └── services/                       # Nghiệp vụ Analytics, K-Means & MBA
-├── examples/
-│   └── pyqt6_client_demo.py            # [PHÂN HỆ 1] Desktop Client PyQt6
-│
-├── src/                                # [PHÂN HỆ 2] Engine Dự báo Nhu cầu SKU-Tuần
-│   ├── api/
-│   │   ├── main.py                     # FastAPI Master Application
-│   │   ├── routes/                     # Dashboard, Models, Forecasts, SKUs, Planning, Auth
-│   │   └── schemas/                    # Pydantic schemas chuẩn hợp đồng API
-│   ├── models/                         # Sequence Dataset, Temporal Windowing
-│   ├── services/                       # Forecasting, Registry, SKU, Planning, Auth Service
-│   └── core/                           # Cấu hình Pydantic Settings & Logging
-├── frontend/                           # [PHÂN HỆ 2] Giao diện Web SPA React + Vite
-│   ├── src/pages/                      # Dashboard, Forecast, SkuExplorer, Evaluation, Registry...
+├── src/                                # Core Source Code Engine
+│   ├── api/                            # FastAPI REST API
+│   │   ├── main.py                     # Entry point chính của ứng dụng
+│   │   ├── routes/                     # Auth, Dashboard, Forecasts, Models, Planning, Skus
+│   │   └── schemas/                    # Pydantic schemas chuẩn hóa hợp đồng API
+│   ├── core/                           # Cấu hình Pydantic Settings & Logging
+│   ├── models/                         # Sequence Dataset, Rollout Inference Engine
+│   └── services/                       # Forecasting, Registry, SKU, Planning, Auth Service
+├── frontend/                           # Giao diện Web SPA React + Vite
+│   ├── src/pages/                      # 10 trang màn hình giao diện
 │   └── dist/                           # Bundle sản phẩm biên dịch sẵn (tự động mount vào API)
-├── artifacts/
-│   ├── tables/                         # Bảng số liệu vật lý OOF (66.16%) & Holdout (65.57%)
-│   ├── models/                         # Model weights đã đóng băng (CatBoost, TiDE, LightGBM)
-│   └── figures/                        # Biểu đồ SHAP, Pareto, SBC, Residuals
+├── artifacts/                          # Các tài sản vật lý đã đóng băng
+│   ├── tables/                         # CSV Leaderboard OOF & Holdout metrics
+│   ├── models/                         # Trọng số mô hình đã huấn luyện (.cbm, .pkl, .pt)
+│   └── figures/                        # Đồ thị SHAP, phân tích lỗi, biểu đồ SBC
 ├── data/
 │   ├── processed/                      # Panel demand 2,785 SKUs (sku_week_demand_v1_1.csv)
-│   └── manifests/                      # Allowlist 71 đặc trưng chuẩn hóa
-├── project_docs/                       # Hồ sơ tài liệu khoa học 16 giai đoạn (Phases 1-16)
-├── tests/                              # Bộ kiểm thử hồi quy 203 tests (100% Pass)
-├── requirements.txt                    # Danh mục thư viện Python hợp nhất
-├── .env.example                        # Mẫu biến môi trường bảo mật
+│   └── manifests/                      # Predictor Allowlist (71 features)
+├── project_docs/                       # Báo cáo kỹ thuật chi tiết 16 giai đoạn (Phases 1-16)
+├── tests/                              # Bộ kiểm thử tự động 203 bài tests (100% PASS)
+├── requirements.txt                    # Thư viện Python phụ thuộc
+├── .env.example                        # Mẫu cấu hình môi trường
 ├── .gitignore                          # Cấu hình loại trừ bí mật & tệp rác
-└── run.py                              # Khởi chạy server Phân hệ 1
+└── run.py                              # Script khởi động máy chủ một lệnh
 ```
 
 ---
 
-## 🛠️ 3. Hướng dẫn Khởi chạy Từng Phân hệ
+## 🛠️ 4. Hướng dẫn Cài đặt & Khởi chạy Nhanh
 
-### Cách 1: Chạy Phân hệ Dự báo Nhu cầu & Quản trị Tồn kho (Phân hệ 2 - Web Fullstack)
-Phân hệ này chạy trên nền FastAPI kết hợp giao diện Web React được mount sẵn:
+### Bước 1: Khởi tạo môi trường & Cài đặt thư viện
 ```bash
-# Khởi động Backend + Web UI (Port 8000)
+# Tạo môi trường ảo Python (khuyến nghị Python 3.10 - 3.12)
+python -m venv venv
+venv\Scripts\activate   # Trên Windows
+# source venv/bin/activate  # Trên Linux/macOS
+
+# Cài đặt các thư viện cần thiết
+pip install -r requirements.txt
+```
+
+### Bước 2: Khởi động Ứng dụng (1 lệnh duy nhất)
+Chạy script khởi động:
+```bash
+python run.py
+```
+*hoặc qua lệnh uvicorn:*
+```bash
 python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 ```
-* **Giao diện Web Ứng dụng**: Mở trình duyệt tại **`http://127.0.0.1:8000`**
-* **Tài liệu Swagger UI**: **`http://127.0.0.1:8000/docs`**
-* **Tài khoản đăng nhập Demo (RBAC)**:
-  - Admin: `admin` / `Admin123!`
-  - Analyst: `analyst` / `Analyst123!`
-  - Planner: `planner` / `Planner123!`
-  - Viewer: `viewer` / `Viewer123!`
-* **Chạy bộ kiểm thử tự động (203/203 tests)**:
-  ```bash
-  python -m pytest tests -q
-  ```
+
+### Bước 3: Trải nghiệm Hệ thống
+* **Cổng giao diện Web (React SPA)**: Mở trình duyệt tại **`http://127.0.0.1:8000`**
+* **Tài liệu Swagger API Docs**: **`http://127.0.0.1:8000/docs`**
+
+#### 🔑 Tài khoản đăng nhập mẫu (RBAC):
+Hệ thống tích hợp sẵn 4 tài khoản phân quyền theo chuẩn NIST/OWASP:
+| Tên người dùng | Mật khẩu | Quyền hạn (Role) | Chức năng được phép |
+| :--- | :--- | :--- | :--- |
+| `admin` | `Admin123!` | **Admin** | Toàn quyền quản trị, quản lý người dùng, chạy dự báo, xuất file |
+| `analyst` | `Analyst123!` | **Analyst** | Thực hiện dự báo nhu cầu đa bước, tải báo cáo CSV/XLSX |
+| `planner` | `Planner123!` | **Planner** | Thực hiện mô phỏng bổ sung tồn kho định kỳ (R, S) |
+| `viewer` | `Viewer123!` | **Viewer** | Chỉ xem (Read-only) dashboard, catalog SKU và bảng xếp hạng |
 
 ---
 
-### Cách 2: Chạy Phân hệ Phân khúc Khách hàng & KPIs (Phân hệ 1 - MySQL & PyQt6)
-Phân hệ này chạy dịch vụ backend kết nối MySQL và client PyQt6:
+## 🧪 5. Kiểm thử Tự động & Quản trị Chất lượng (QA Suite)
+
+Dự án trang bị bộ kiểm thử tự động toàn diện **203/203 bài tests đạt 100% PASS**, bảo đảm tính toàn vẹn:
 ```bash
-# 1. Khởi động server API Phân hệ 1
-python run.py
-
-# 2. Khởi động ứng dụng Desktop PyQt6 (trong terminal mới)
-python examples/pyqt6_client_demo.py
+python -m pytest tests -q
 ```
-
----
-
-## 📡 4. Bảng Tra cứu API Endpoints Chính
-
-### Phân hệ 1: Analytics & Segmentation
-| Phương thức | Đường dẫn API | Mô tả chức năng |
-| :--- | :--- | :--- |
-| `GET` | `/api/analytics/kpis` | Tổng quan KPIs kinh doanh: Doanh thu, Đơn hàng, Khách hàng, AOV |
-| `GET` | `/api/analytics/monthly-sales` | Thống kê doanh thu theo tháng |
-| `POST` | `/api/ml/segmentation/predict` | Dự đoán phân khúc khách hàng từ điểm (R, F, M) |
-| `GET` | `/api/ml/recommendation/by-product` | Gợi ý sản phẩm mua cùng (Market Basket Analysis) |
-
-### Phân hệ 2: Demand Forecasting & Inventory Planning
-| Phương thức | Đường dẫn API | Mô tả chức năng |
-| :--- | :--- | :--- |
-| `POST` | `/api/v1/auth/login` | Xác thực người dùng, cấp JWT Bearer Token |
-| `GET` | `/api/v1/dashboard/summary` | Báo cáo điều hành quy mô catalog, timeline và model readiness |
-| `GET` | `/api/v1/models/leaderboard` | Bảng xếp hạng mô hình thực tế (OOF & Holdout $H=4$) |
-| `GET` | `/api/v1/skus` | Tra cứu catalog 2,785 SKU với bộ lọc ABC Volume và SBC Intermittency |
-| `POST` | `/api/v1/forecasts` | Sinh dự báo nhu cầu đa bước thời gian thực bằng model weights thật |
-| `POST` | `/api/v1/planning/replenish` | Mô phỏng tính toán đơn đặt hàng bổ sung tồn kho định kỳ (R, S) |
-| `GET` | `/health/live` & `/health/ready` | Kiểm tra ứng dụng hoạt động (Liveness/Readiness probes) |
+Các hạng mục kiểm thử bao gồm:
+* **Kiểm tra rò rỉ dữ liệu (No-leakage audit)**: Xác thực không có đặc trưng tương lai lọt vào quá khứ.
+* **Bảo vệ tập Holdout (No holdout rescoring)**: Khóa cố định mốc thời gian thẩm định.
+* **Hợp đồng API & Phân quyền (RBAC)**: Kiểm tra mã lỗi 401 Unauthorized, 403 Forbidden, 422 Validation.
+* **Giới hạn bước dự báo (Horizon Cap)**: Chặn mọi yêu cầu $H > 4$ theo quy định an toàn mô hình.
