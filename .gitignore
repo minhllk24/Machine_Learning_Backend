@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C environments
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Data files (lớn)
+*.xlsx
+*.csv
+*.sql
+*.zip
+
+# Model files nặng
+models_saved/*.joblib
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
