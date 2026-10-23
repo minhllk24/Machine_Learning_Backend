@@ -100,3 +100,39 @@ def populate_sqlite_db(df_cleaned=None, panel_df=None, test_predictions=None):
     conn.commit()
     conn.close()
     logger.info("SQLite database populated successfully.")
+
+
+def get_mysql_connection():
+    """Tạo kết nối tới MySQL Server dựa trên cấu hình môi trường."""
+    import os
+    import mysql.connector
+    return mysql.connector.connect(
+        host=os.getenv("MYSQL_HOST", "127.0.0.1"),
+        port=int(os.getenv("MYSQL_PORT", 3306)),
+        user=os.getenv("MYSQL_USER", "root"),
+        password=os.getenv("MYSQL_PASSWORD", "123456"),
+        database=os.getenv("MYSQL_DATABASE", "online_retail_db"),
+        autocommit=False
+    )
+
+
+def populate_mysql_db():
+    """Nạp toàn bộ dữ liệu sạch, panel tuần và dự báo vào cơ sở dữ liệu MySQL."""
+    from scripts.populate_mysql_all import (
+        populate_transactions,
+        populate_sku_week_demand,
+        populate_forecast_predictions,
+        verify_all_tables
+    )
+    logger.info("Bắt đầu đồng bộ toàn bộ dữ liệu vào MySQL (online_retail_db)...")
+    populate_transactions()
+    populate_sku_week_demand()
+    populate_forecast_predictions()
+    verify_all_tables()
+
+
+if __name__ == "__main__":
+    export_mysql_schema()
+    populate_sqlite_db()
+    populate_mysql_db()
+
