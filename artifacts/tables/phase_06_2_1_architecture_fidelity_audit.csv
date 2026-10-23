@@ -1,0 +1,13 @@
+model,paper_reference,component,paper_spec,actual_implementation,fidelity_verdict,notes
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Input Window,Lookback L time steps,"L=13 weekly demand tensor (B, 13)",FULL_FIDELITY,Captures 1 quarterly cycle
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Past Dynamic Covariates,Projected past covariates,"Linear(4, 16) projection per timestep",FULL_FIDELITY,"Price, txn, cust, zero_flag"
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Known Future Covariates,Projected future covariates,"Linear(10, 16) calendar projection",FULL_FIDELITY,Deterministic calendar features
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Dense Residual Encoder,Multi-layer MLP residual blocks,2 Residual Blocks with ReLU + LayerNorm,FULL_FIDELITY,Hidden dim 64
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Dense Decoder,"Decodes to (B, H, decoder_dim)","Dense block projecting to (B, 8, 64)",FULL_FIDELITY,Direct multi-horizon vector
+TiDE_Sequence_v1,Das et al. (2023) TMLR,Linear Skip Connection,Linear map y_{1:L} -> y_{L+1:L+H},W_skip in R^{8x13} linear layer,FULL_FIDELITY,Prevents shrinkage on intermittent demand
+TFT_Sequence_v1,Lim et al. (2021) IJF,Sequence Length (S),S = L + H > 1,S = 21 (L=13 lookback + H=8 horizon),FULL_FIDELITY,Cures S=1 tabular collapse
+TFT_Sequence_v1,Lim et al. (2021) IJF,Variable Selection Network,Per-timestep dynamic feature selection,VSN across 4 feature channels per step,FULL_FIDELITY,Softmax weights across channels
+TFT_Sequence_v1,Lim et al. (2021) IJF,Recurrent Processing,Local temporal processing (Seq2Seq / LSTM),Unidirectional LSTM (batch_first=True) + GLU,FULL_FIDELITY,Unidirectional preserves strict causality
+TFT_Sequence_v1,Lim et al. (2021) IJF,Temporal Attention,Interpretable Self-Attention,Causal Multi-Head Attention (21x21),FULL_FIDELITY,Lower-triangular mask prevents future attention
+TFT_Sequence_v1,Lim et al. (2021) IJF,Multi-Horizon Output,"Direct multi-step vector (B, H)","Post-attention GRN + Linear(64, 1) to (B, 8)",FULL_FIDELITY,Direct 8-week horizon forecast
+TFT_Sequence_v1,Lim et al. (2021) IJF,Probabilistic Quantiles,"Quantile regression (10%, 50%, 90%)",Median point forecast (L1 loss),DEVIATION_DISCLOSED,Point forecast implemented; quantile intervals reserved for future calibration

@@ -1,0 +1,10 @@
+population_version,cohort_tier,sku_count,total_demand,pct_of_cleaned_demand,notes
+RAW_POSITIVE_TRANSACTIONS,ALL_RAW_MERCHANDISE,4905,11672570,104.33,"Positive quantity lines prior to duplicate, cancellation, and non-merchandise exclusions"
+CLEANED_ALL_COUNTRIES,FULL_CLEANED_CATALOG,4905,11188214,100.0,Denominator of truth: cleaned transactions for all 43 countries
+CLEANED_UK_ONLY,UK_DOMESTIC_CATALOG,4894,9176320,82.02,Sensitivity universe: cleaned transactions with Country == United Kingdom
+HISTORICAL_CLAIMED_COHORT,HISTORICAL_NOTE_REFERENCE,2795,10724539,95.86,"UNVERIFIED CALCULATION ARTIFACT: text multiplier 95.86% applied to 11,188,214; physical sum is 8,548,288"
+HISTORICAL_PHYSICAL_SUM,HISTORICAL_PHYSICAL_2795,2795,8548288,76.4,"Actual physical quantity sum of the 2,795 historical SKUs in cleaned transactions"
+PANEL_V1_1_COMBINED,ACTIVE_EVALUATION_UNIVERSE,2785,8545606,76.38,Regenerated panel v1.1 combining CAUSAL_MATURE and LATE_MATURING SKUs
+PANEL_V1_1_PRIMARY_BENCHMARK,CAUSAL_MATURE (Primary Benchmark),1717,7019852,62.74,Strict causal benchmark: zero lookahead leakage; invariant to future perturbation
+PANEL_V1_1_SECONDARY_ANALYSIS,LATE_MATURING (Secondary Analysis),1068,1525754,13.64,Secondary cohort: reached qualification after 2010-04-27 cutoff
+CATALOG_FILTERED_OUT,SPARSE_AND_NOVELTY,2120,2642608,23.62,Excluded from active panel: items with <10 active weeks or <50 units or late launch

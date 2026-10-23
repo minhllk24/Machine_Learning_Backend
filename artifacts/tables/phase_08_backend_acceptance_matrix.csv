@@ -1,0 +1,20 @@
+Endpoint,Method,Route,Acceptance Criteria,Verified Behavior,Status,Response Code,Evidence Reference
+Liveness Probe,GET,/health/live,Process running and responsive,Returns live status,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Readiness Probe,GET,/health/ready,Reports component readiness,Reports registry and db ready,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Model List,GET,/api/v1/models,Lists models with role and status,Returns 87 models including production champions,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Model Detail,GET,/api/v1/models/{model_id},Returns detail without leaking paths,Path is scrubbed and metadata complete,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Model Capabilities,GET,/api/v1/models/{model_id}/capabilities,Returns multi-week horizons and strategy,Reports H=1..8 and CAUSAL_RECURSIVE_ROLLOUT,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Forecast Generation,POST,/api/v1/forecasts,Multi-week real inference with persistence,Exact parity (0.0 diff) with locked holdout predictions,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Forecast Reject CV,POST,/api/v1/forecasts,CV artifacts rejected with 409,Returns MODEL_NOT_READY_FOR_SERVING,PASS,409 Conflict,tests/api/test_forecasting_contract_validation.py
+Forecast Reject Horizon,POST,/api/v1/forecasts,Horizon > 8 rejected with 422,Returns UNSUPPORTED_HORIZON,PASS,422 Unprocessable,tests/api/test_forecasting_contract_validation.py
+Forecast Reject SKU,POST,/api/v1/forecasts,Unknown SKU rejected with 404,Returns SKU_NOT_FOUND,PASS,404 Not Found,tests/api/test_phase8_backend_and_holdout.py
+Forecast Runs List,GET,/api/v1/forecasts/runs,Paginated history of executed runs,Returns run records with filtering,PASS,200 OK,tests/api/test_persistence_and_export.py
+Forecast Run Detail,GET,/api/v1/forecasts/runs/{run_id},Returns run metadata and timestamps,Matches persisted run state,PASS,200 OK,tests/api/test_persistence_and_export.py
+Forecast Records,GET,/api/v1/forecasts/runs/{run_id}/records,Paginated prediction records,Returns exact predictions with SKU string preservation,PASS,200 OK,tests/api/test_persistence_and_export.py
+Export CSV,POST,/api/v1/forecasts/runs/{run_id}/export,Generates CSV export,Exact row count and sha256 byte integrity,PASS,200 OK,tests/api/test_persistence_and_export.py
+Export XLSX,POST,/api/v1/forecasts/runs/{run_id}/export,Generates Excel workbook,Metadata sheet and data sheet verified,PASS,200 OK,tests/api/test_persistence_and_export.py
+SKU List,GET,/api/v1/skus,Paginated SKU catalog with search and filters,Returns 2785 SKUs with demand stats and classes,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+SKU Detail,GET,/api/v1/skus/{sku_id},Exhaustive SKU metadata and intermittency,Returns ADI/CV2 and lifecycle dates,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+SKU History,GET,/api/v1/skus/{sku_id}/history,96-week demand and pricing time series,Returns full time series array,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Dashboard Summary,GET,/api/v1/dashboard/summary,Executive platform and governance summary,Returns catalog, timeline, candidate status, governance,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py
+Replenishment Simulation,POST,/api/v1/planning/replenish,Single-echelon periodic-review order sizing,Correct arithmetic labeled SIMULATION_BASED_ON_USER_ASSUMPTIONS,PASS,200 OK,tests/api/test_phase8_backend_and_holdout.py

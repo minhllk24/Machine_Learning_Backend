@@ -1,0 +1,21 @@
+module_resource,action_endpoint,http_method,viewer,analyst,planner,admin,enforcement_level,security_rationale
+Authentication,POST /api/v1/auth/login,POST,ALLOW,ALLOW,ALLOW,ALLOW,Public / Unauthenticated,User authentication entry point
+Authentication,POST /api/v1/auth/logout,POST,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Session revocation and token blacklist
+Authentication,GET /api/v1/auth/me,GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Retrieve authenticated user identity and active roles
+User Management,GET /api/v1/auth/users,GET,DENY,DENY,DENY,ALLOW,Admin Role Required,Listing system accounts restricted to administrators
+User Management,POST /api/v1/auth/users,POST,DENY,DENY,DENY,ALLOW,Admin Role Required,Creating users with role assignment restricted to admin
+Dashboard,GET /api/v1/dashboard/summary,GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Read-only system telemetry and aggregate catalog stats
+SKU Explorer,GET /api/v1/skus,GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Paginated catalog search across 2,785 panel SKUs
+SKU Explorer,GET /api/v1/skus/{sku_id},GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Retrieve SKU metadata and historical distribution stats
+SKU Explorer,GET /api/v1/skus/{sku_id}/history,GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Retrieve weekly sales history series for charting
+Forecasting Engine,POST /api/v1/forecasts,POST,DENY,ALLOW,ALLOW,ALLOW,Function-Level Authorization,Triggering model inference consumes CPU/memory resources
+Forecasting Engine,GET /api/v1/models,GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Inspect registered models and serving readiness status
+Forecasting Engine,GET /api/v1/models/{model_id},GET,ALLOW,ALLOW,ALLOW,ALLOW,Authenticated,Inspect model capabilities, horizons, and metrics
+Forecast History,GET /api/v1/forecasts/runs,GET,ALLOW,ALLOW,ALLOW,ALLOW,Object-Level Authorization,View historical runs (viewers see permitted runs)
+Forecast History,GET /api/v1/forecasts/runs/{run_id},GET,ALLOW,ALLOW,ALLOW,ALLOW,Object-Level Authorization,Inspect run metadata (ownership validated)
+Forecast History,GET /api/v1/forecasts/runs/{run_id}/results,GET,ALLOW,ALLOW,ALLOW,ALLOW,Object-Level Authorization,Retrieve SKU forecast rows for run
+Data Export,POST /api/v1/forecasts/runs/{run_id}/exports,POST,DENY,ALLOW,ALLOW,ALLOW,Function-Level Authorization,Generating CSV/XLSX export files
+Data Export,GET /api/v1/forecasts/runs/{run_id}/exports/{export_id}/download,GET,ALLOW,ALLOW,ALLOW,ALLOW,Object-Level Authorization,Download verified export file
+Replenishment Planning,POST /api/v1/planning/replenish,POST,DENY,DENY,ALLOW,ALLOW,Function-Level Authorization,Replenishment simulation reserved for planners and admins
+System Health,GET /health/live,GET,ALLOW,ALLOW,ALLOW,ALLOW,Public,Liveness probe for process monitoring
+System Health,GET /health/ready,GET,ALLOW,ALLOW,ALLOW,ALLOW,Public,Readiness probe for dependency verification

@@ -1,0 +1,4 @@
+model_name,device,batch_size,horizons_generated,inference_type,p50_ms,p95_ms,p99_ms,per_sku_p50_us,measurement_status
+CatBoost__MAE (Single Step h=1),CPU (C++ native inference),1717,1,Model-only single forward pass,3.13,3.74,3.82,1.82,EMPIRICALLY_MEASURED
+CatBoost__MAE (Recursive H=4 Rollout),CPU (C++ native + numpy updates),1717,4,4-step recursive rollout with lag updates,13.1,18.2,18.98,7.63,EMPIRICALLY_MEASURED
+TiDE_Sequence_v1 (Direct H=8 Forward Pass),CPU (PyTorch TorchScript / native),1717,8,Single joint vector pass for all 8 steps,3.02,3.55,5.71,1.76,EMPIRICALLY_MEASURED

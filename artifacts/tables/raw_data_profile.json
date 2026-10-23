@@ -1,0 +1,55 @@
+{
+    "shape": [
+        1067371,
+        8
+    ],
+    "columns": [
+        "Invoice",
+        "StockCode",
+        "Description",
+        "Quantity",
+        "InvoiceDate",
+        "Price",
+        "CustomerID",
+        "Country"
+    ],
+    "dtypes": {
+        "Invoice": "object",
+        "StockCode": "object",
+        "Description": "object",
+        "Quantity": "int64",
+        "InvoiceDate": "datetime64[ns]",
+        "Price": "float64",
+        "CustomerID": "float64",
+        "Country": "object"
+    },
+    "missing": {
+        "Invoice": 0,
+        "StockCode": 0,
+        "Description": 4382,
+        "Quantity": 0,
+        "InvoiceDate": 0,
+        "Price": 0,
+        "CustomerID": 243007,
+        "Country": 0
+    },
+    "missing_pct": {
+        "Invoice": 0.0,
+        "StockCode": 0.0,
+        "Description": 0.41,
+        "Quantity": 0.0,
+        "InvoiceDate": 0.0,
+        "Price": 0.0,
+        "CustomerID": 22.77,
+        "Country": 0.0
+    },
+    "duplicates": 34335,
+    "date_range": [
+        "2009-12-01 07:45:00",
+        "2011-12-09 12:50:00"
+    ],
+    "n_invoices": 53628,
+    "n_stockcodes": 5305,
+    "n_customers": 5942,
+    "n_countries": 43
+}

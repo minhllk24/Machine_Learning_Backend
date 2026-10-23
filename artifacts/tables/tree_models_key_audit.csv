@@ -1,0 +1,13 @@
+cohort,model_name,n_rows,n_unique_keys,is_unique,matches_baseline_keys,holdout_leakage_count
+CAUSAL_MATURE,LightGBM__regression_l1,68680,68680,True,True,0
+CAUSAL_MATURE,LightGBM__poisson,68680,68680,True,True,0
+CAUSAL_MATURE,LightGBM__tweedie_p15,68680,68680,True,True,0
+CAUSAL_MATURE,CatBoost__MAE,68680,68680,True,True,0
+CAUSAL_MATURE,CatBoost__Poisson,68680,68680,True,True,0
+CAUSAL_MATURE,CatBoost__Tweedie_p15,68680,68680,True,True,0
+LATE_MATURING,LightGBM__regression_l1,42720,42720,True,True,0
+LATE_MATURING,LightGBM__poisson,42720,42720,True,True,0
+LATE_MATURING,LightGBM__tweedie_p15,42720,42720,True,True,0
+LATE_MATURING,CatBoost__MAE,42720,42720,True,True,0
+LATE_MATURING,CatBoost__Poisson,42720,42720,True,True,0
+LATE_MATURING,CatBoost__Tweedie_p15,42720,42720,True,True,0

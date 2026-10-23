@@ -1,0 +1,10 @@
+Bước xử lý,Số lượng,Ghi chú
+Dữ liệu ban đầu (Initial rows),1067371,
+Bản ghi trùng lặp (Duplicates),34335,Loại bỏ
+Giao dịch huỷ (Cancellations),19104,8292 hoá đơn
+Quantity ≤ 0,3393,Loại bỏ
+Price ≤ 0,2626,Loại bỏ
+Dòng phi hàng hoá (Non-merchandise),4447,Loại bỏ
+Missing CustomerID,226842,22.61% — giữ lại
+Lọc quốc gia (Country filter),0,None (all countries)
+Dữ liệu sau cleaning (Final rows),1003466,

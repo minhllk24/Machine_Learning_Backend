@@ -1,0 +1,136 @@
+{
+  "manifest_name": "phase_08_holdout_freeze_manifest",
+  "phase": "PHASE_08_FINAL_HOLDOUT_EVALUATION",
+  "created_at_utc": "2026-10-21T06:05:00Z",
+  "governing_gate": "G15_SEALED_PRE_SCORING_LOCK",
+  "forecast_origin": "2011-10-03",
+  "training_cutoff": "2011-10-03",
+  "forecast_horizons": {
+    "step_1": 1,
+    "operational": 4,
+    "extended": 8,
+    "all_steps": [1, 2, 3, 4, 5, 6, 7, 8]
+  },
+  "target_weeks": [
+    "2011-10-10",
+    "2011-10-17",
+    "2011-10-24",
+    "2011-10-31",
+    "2011-11-07",
+    "2011-11-14",
+    "2011-11-21",
+    "2011-11-28"
+  ],
+  "excluded_boundary_week": "2011-12-05",
+  "evaluation_universe": {
+    "primary_cohort": {
+      "cohort_name": "CAUSAL_MATURE",
+      "sku_count": 1717,
+      "horizon_weeks": 8,
+      "expected_records": 13736
+    },
+    "secondary_cohort": {
+      "cohort_name": "LATE_MATURING",
+      "sku_count": 1068,
+      "horizon_weeks": 8,
+      "expected_records": 8544
+    },
+    "combined_universe": {
+      "total_skus": 2785,
+      "horizon_weeks": 8,
+      "expected_records_per_candidate": 22280
+    }
+  },
+  "feature_schema": {
+    "allowlist_path": "data/processed/predictor_allowlist_v1_2.json",
+    "n_predictors": 71,
+    "allowlist_sha256": "73985d81043f5bcb921ce121f6cb89c4cee8d594248353943ffb68fe027b8968"
+  },
+  "candidates": [
+    {
+      "model_id": "CatBoost__MAE",
+      "model_version": "v1.0-refit",
+      "role": "PRIMARY_CHAMPION",
+      "prediction_strategy": "CAUSAL_RECURSIVE_ROLLOUT",
+      "artifacts": {
+        "CAUSAL_MATURE": {
+          "path": "artifacts/models/production_candidates/CatBoost__MAE_champion_CAUSAL_MATURE.cbm",
+          "sha256": "56fdf57d7a1161af5ec7ffd5bea9805384c941f59465c15c4daae27453d0b6e0",
+          "iterations": 340
+        },
+        "LATE_MATURING": {
+          "path": "artifacts/models/production_candidates/CatBoost__MAE_champion_LATE_MATURING.cbm",
+          "sha256": "8e445e9818a9849c79ebde404a7bd2c98073234e907823208301b794c1b3cdf3",
+          "iterations": 205
+        }
+      }
+    },
+    {
+      "model_id": "CatBoost__Tweedie_p15",
+      "model_version": "v1.0-refit",
+      "role": "LOW_AGGREGATE_BIAS_DIAGNOSTIC",
+      "prediction_strategy": "CAUSAL_RECURSIVE_ROLLOUT",
+      "artifacts": {
+        "CAUSAL_MATURE": {
+          "path": "artifacts/models/production_candidates/CatBoost__Tweedie_p15_champion_CAUSAL_MATURE.cbm",
+          "sha256": "efb5aee0895cff43f29d641bc13069b30797b15b222c959f4397a39872178cf9",
+          "iterations": 210
+        },
+        "LATE_MATURING": {
+          "path": "artifacts/models/production_candidates/CatBoost__Tweedie_p15_champion_LATE_MATURING.cbm",
+          "sha256": "8d1cca0761a16548d494e450f31a7e17532a52ea535da9f00751f50ae7191f36",
+          "iterations": 216
+        }
+      }
+    },
+    {
+      "model_id": "TiDE_Sequence_v1",
+      "model_version": "v1.0-refit",
+      "role": "DEEP_MULTI_HORIZON_DIAGNOSTIC",
+      "prediction_strategy": "DIRECT_MULTI_HORIZON_PASS",
+      "artifacts": {
+        "CAUSAL_MATURE": {
+          "path": "artifacts/models/production_candidates/TiDE_Sequence_v1_champion_CAUSAL_MATURE.pt",
+          "sha256": "20daa938b70b8a6354ccd56884dc06cb828ad238955668949183064238287f50",
+          "epochs": 5
+        },
+        "LATE_MATURING": {
+          "path": "artifacts/models/production_candidates/TiDE_Sequence_v1_champion_LATE_MATURING.pt",
+          "sha256": "099b8252969cd7d02f4c522de52aa5cc396ebc2dec79c98d3f950a9da9a811c9",
+          "epochs": 5
+        }
+      }
+    },
+    {
+      "model_id": "MA_4",
+      "model_version": "v1.0",
+      "role": "BASELINE_BENCHMARK",
+      "prediction_strategy": "FIXED_ORIGIN_MOVING_AVERAGE_4",
+      "artifacts": null
+    },
+    {
+      "model_id": "Naive_1",
+      "model_version": "v1.0",
+      "role": "BASELINE_BENCHMARK",
+      "prediction_strategy": "FIXED_ORIGIN_PERSISTENCE",
+      "artifacts": null
+    }
+  ],
+  "metric_definitions": {
+    "primary_metric": "pooled_wape",
+    "secondary_metrics": [
+      "mae",
+      "rmse",
+      "signed_bias",
+      "macro_mase",
+      "macro_rmsse",
+      "coverage",
+      "zero_forecast_rate",
+      "true_clipping_rate"
+    ]
+  },
+  "decision_rules": {
+    "champion_freeze_preservation": "CatBoost__MAE is the primary champion. No holdout result will trigger retraining or model replacement.",
+    "evaluation_pass_rule": "Stage B prediction generation strictly accesses history <= 2011-10-03. Stage C one-time scoring evaluates predictions against unsealed actuals."
+  }
+}

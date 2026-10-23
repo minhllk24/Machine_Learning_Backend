@@ -1,0 +1,74 @@
+Column_Name,Data_Type,Feature_Group,Description_VN,Sample_Value
+sku_id,object,Identifier,Mã định danh sản phẩm bán lẻ (StockCode/SKU),10002
+week_start,datetime64[ns],Time,"Ngày bắt đầu của tuần kinh doanh (thứ Hai, W-MON)",2009-12-01 00:00:00
+demand,int64,Demand,Tổng số lượng sản phẩm bán được trong tuần hiện tại (t),142
+avg_unit_price,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,0.85
+transaction_count,int64,Other,Thuộc tính thống kê hỗ trợ,11
+unique_customer_count,int64,Other,Thuộc tính thống kê hỗ trợ,11
+total_revenue,float64,Other,Thuộc tính thống kê hỗ trợ,120.69999999999999
+min_price,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,0.85
+max_price,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,0.85
+zero_demand_flag,int64,Other,Thuộc tính thống kê hỗ trợ,0
+is_active,int64,Other,Thuộc tính thống kê hỗ trợ,1
+week_of_year,int64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",49
+month,int32,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",12
+quarter,int32,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",4
+year,int32,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",2009
+time_index,int64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",0
+week_sin,float64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",-0.35460488704253595
+week_cos,float64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",0.9350162426854147
+month_sin,float64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",-2.4492935982947064e-16
+month_cos,float64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",1.0
+is_december,int64,Calendar,"Đặc trưng lịch, chu kỳ tuần/tháng, chỉ số thời gian và mùa vụ lễ hội",1
+lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,142.0
+lag_2,float64,Lag,Nhu cầu quá khứ trễ 2 tuần,142.0
+lag_3,float64,Lag,Nhu cầu quá khứ trễ 3 tuần,142.0
+lag_4,float64,Lag,Nhu cầu quá khứ trễ 4 tuần,142.0
+lag_8,float64,Lag,Nhu cầu quá khứ trễ 8 tuần,142.0
+lag_13,float64,Lag,Nhu cầu quá khứ trễ 13 tuần,142.0
+lag_26,float64,Lag,Nhu cầu quá khứ trễ 26 tuần,142.0
+lag_52,float64,Lag,Nhu cầu quá khứ trễ 52 tuần,142.0
+rolling_mean_4,float64,Rolling,Trung bình trượt nhu cầu 4 tuần qua (dựa trên t-1),142.0
+rolling_std_4,float64,Rolling,Độ lệch chuẩn trượt nhu cầu 4 tuần qua,0.0
+rolling_median_4,float64,Rolling,Trung vị trượt nhu cầu 4 tuần qua,142.0
+rolling_min_4,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_max_4,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_mean_8,float64,Rolling,Trung bình trượt nhu cầu 8 tuần qua (dựa trên t-1),142.0
+rolling_std_8,float64,Rolling,Độ lệch chuẩn trượt nhu cầu 8 tuần qua,0.0
+rolling_median_8,float64,Rolling,Trung vị trượt nhu cầu 8 tuần qua,142.0
+rolling_min_8,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_max_8,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_mean_13,float64,Rolling,Trung bình trượt nhu cầu 13 tuần qua (dựa trên t-1),142.0
+rolling_std_13,float64,Rolling,Độ lệch chuẩn trượt nhu cầu 13 tuần qua,0.0
+rolling_median_13,float64,Rolling,Trung vị trượt nhu cầu 13 tuần qua,142.0
+rolling_min_13,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_max_13,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_mean_26,float64,Rolling,Trung bình trượt nhu cầu 26 tuần qua (dựa trên t-1),142.0
+rolling_std_26,float64,Rolling,Độ lệch chuẩn trượt nhu cầu 26 tuần qua,0.0
+rolling_median_26,float64,Rolling,Trung vị trượt nhu cầu 26 tuần qua,142.0
+rolling_min_26,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+rolling_max_26,float64,Other,Thuộc tính thống kê hỗ trợ,142.0
+ewma_4,float64,EWM,Trung bình trượt hàm mũ (EWMA) span=4 tuần,142.0
+ewma_13,float64,EWM,Trung bình trượt hàm mũ (EWMA) span=13 tuần,142.0
+demand_diff_1,float64,Other,Thuộc tính thống kê hỗ trợ,-83.0
+demand_growth_rate,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+cv_8,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+zero_rate_last_4,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+zero_rate_last_8,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+zero_rate_last_13,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+weeks_since_last_sale,int64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0
+weeks_since_first_sale,int64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0
+intermittency_ratio,float64,Demand Dynamics,"Đặc trưng động lực nhu cầu, tính gián đoạn (intermittency) và khoảng cách bán hàng",0.0
+price_lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,0.85
+price_rolling_mean_4,float64,Rolling,Trung bình trượt nhu cầu 4 tuần qua (dựa trên t-1),0.85
+price_rolling_mean_8,float64,Rolling,Trung bình trượt nhu cầu 8 tuần qua (dựa trên t-1),0.85
+price_change,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,0.2833333333333333
+price_change_pct,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,0.0
+price_vs_rolling_8,float64,Price,Đặc trưng giá bán đơn vị và biến động giá quá khứ,1.0
+txn_count_lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,11.0
+txn_count_lag_4,float64,Lag,Nhu cầu quá khứ trễ 4 tuần,11.0
+txn_rolling_mean_4,float64,Rolling,Trung bình trượt nhu cầu 4 tuần qua (dựa trên t-1),11.0
+cust_count_lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,11.0
+total_market_demand_lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,153308.0
+sku_share_lag_1,float64,Lag,Nhu cầu quá khứ trễ 1 tuần,0.0
+target,float64,Target,Mục tiêu: Tổng số lượng nhu cầu tuần tiếp theo (t+1),59.0

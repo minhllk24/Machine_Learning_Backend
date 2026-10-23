@@ -1,0 +1,29 @@
+gate_id,gate_name,requirement,evidence_path,verification_method,result,severity_if_failed,decision
+G01,Data Lineage & Cleaning Reconciliation,Zero loss of raw transactions; reconciliation diffs accounted for,project_docs/data_cleaning_reconciliation.md,tests/test_cleaning_reconciliation.py,PASS,CRITICAL,ACCEPT
+G02,Canonical Weekly Boundary Semantics,W-MON ISO Monday 00:00:00 floor interval [t_start t_end),project_docs/data_contract.md,tests/test_phase16_calendar_and_boundary.py,PASS,CRITICAL,ACCEPT
+G03,Panel Population Completeness,2785 active SKUs x 104 weeks = 289640 records; unobserved vs zero demand separated,data/gold/sku_panel_weekly.parquet,tests/test_gold_panel_integrity.py,PASS,CRITICAL,ACCEPT
+G04,Strict Predictor Allowlist & No Leakage,51 governed features; zero holdout or future target leakage,project_docs/feature_contract.md,tests/test_feature_manifest_and_leakage.py,PASS,CRITICAL,ACCEPT
+G05,Statistical Baselines & Benchmarks,Naive-1 Seasonal Naive and Moving Average computed across 5 folds,project_docs/phase_04_baseline_benchmarks.md,artifacts/evaluation/cv_baseline_metrics.parquet,PASS,MAJOR,ACCEPT
+G06,Tabular Model Cross-Validation,LightGBM CatBoost MAE and Tweedie evaluated on 5-fold expanding window,project_docs/phase_05_tabular_model_report.md,artifacts/evaluation/cv_tabular_metrics.parquet,PASS,MAJOR,ACCEPT
+G07,Deep Learning Model Verification,TiDE sequence model trained and evaluated across 5 folds,project_docs/phase_06_deep_model_report.md,artifacts/evaluation/cv_deep_metrics.parquet,PASS,MAJOR,ACCEPT
+G08,Champion Selection Protocol,CatBoost MAE selected via pre-declared protocol and DM test,project_docs/phase_07_selection_protocol.md,artifacts/evaluation/selection_audit_manifest.json,PASS,CRITICAL,ACCEPT
+G09,Holdout Single-Score Freeze,Holdout scored once in Phase 8; zero retraining or rescoring,project_docs/phase_08_final_holdout_evaluation.md,artifacts/evaluation/holdout_frozen_manifest.json,PASS,FATAL,ACCEPT
+G10,Model Artifact Cryptographic Integrity,All 87 model weights match SHA-256 digests in inventory,artifacts/models/,tests/test_model_artifact_hashes.py,PASS,CRITICAL,ACCEPT
+G11,FastAPI Service Parity,Inference returns float32 parity (<1e-4) with offline predictions,src/services/forecasting_service.py,tests/api/test_phase8_backend_and_holdout.py,PASS,CRITICAL,ACCEPT
+G12,Centralized Error Handling,Consistent JSON error payloads with stable error codes and request IDs,src/api/errors.py,tests/api/test_errors_and_middleware.py,PASS,MAJOR,ACCEPT
+G13,OpenAPI Synchronization,project_docs/openapi.json matches live schema exactly (22 paths),project_docs/openapi.json,tests/api/test_openapi_spec_parity.py,PASS,CRITICAL,ACCEPT
+G14,SHAP Explainability Artifacts,Summary plots bar charts and beeswarm plots generated,project_docs/phase_10_explainability_report.md,artifacts/explainability/,PASS,MINOR,ACCEPT
+G15,Deterministic Inventory Replenishment,Simulation arithmetic matches (R S) policy; explicit assumptions,src/services/planning_service.py,tests/api/test_phase8_backend_and_holdout.py,PASS,MAJOR,ACCEPT
+G16,Export Security & SHA-256 Checksums,CSV and XLSX exports hashed and validated with content-disposition,src/services/export_service.py,tests/api/test_phase15_auth_and_rbac.py,PASS,MAJOR,ACCEPT
+G17,RBAC Function Authorization,Viewer Analyst Planner Admin roles segregated across all endpoints,src/api/dependencies_auth.py,tests/api/test_phase15_auth_and_rbac.py,PASS,CRITICAL,ACCEPT
+G18,BOLA/IDOR Object-Level Authorization,Cross-user export and forecast access blocked with HTTP 403,src/services/persistence_service.py,tests/api/test_phase15_auth_and_rbac.py,PASS,CRITICAL,ACCEPT
+G19,Frontend SPA Architecture & Build,React 18 + Vite + TS builds cleanly with zero errors (3.09s),frontend/dist/,npm run build,PASS,MAJOR,ACCEPT
+G20,Frontend Browser E2E Workflows,13-step complete browser workflow verified across all screens,frontend/e2e/,browser_subagent verification,PASS,CRITICAL,ACCEPT
+G21,Model Evaluation UI Integrity,Historical CV Holdout and Live metrics displayed with caveats,frontend/src/pages/ModelEvaluationPage.tsx,browser_subagent inspection,PASS,MAJOR,ACCEPT
+G22,Regression Test Suite Coverage,203/203 unit and integration tests passing in pytest (0 failures),tests/,pytest -q (203 passed in 79.50s),PASS,CRITICAL,ACCEPT
+G23,Forecast Horizon Serving Enforce,Max horizon H=1..4 enforced across Schema Registry UI and OpenAPI,src/api/schemas/forecast.py,tests/api/test_phase16_security_and_hardening.py,PASS,CRITICAL,ACCEPT
+G24,Replenishment Horizon Guard,Rejects protection period L+R > available horizon with HTTP 422,src/services/planning_service.py,tests/api/test_phase16_security_and_hardening.py,PASS,MAJOR,ACCEPT
+G25,OWASP PBKDF2 600k Password Hashing,600000 iterations PBKDF2-HMAC-SHA256 with transparent auto-migration,src/services/auth_service.py,tests/api/test_phase16_security_and_hardening.py,PASS,CRITICAL,ACCEPT
+G26,RFC 8725 JWT BCP Compliance,HS256 allowlist mandatory exp/nbf/iat checks and 120-min session cap,src/services/auth_service.py,tests/api/test_phase16_security_and_hardening.py,PASS,CRITICAL,ACCEPT
+G27,Export Injection & Traversal Neutralize,Sanitizes formula injection (= + - @ tab cr) and path traversal (.. / \\),src/services/export_service.py,tests/api/test_phase16_security_and_hardening.py,PASS,MAJOR,ACCEPT
+G28,Browser-Level Multi-Role Verification,All 12 business screens Admin Analyst Planner Viewer tested in browser,frontend/dist/,browser_subagent live execution,PASS,CRITICAL,ACCEPT

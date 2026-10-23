@@ -1,0 +1,15 @@
+{
+    "total_weeks": 105,
+    "trainval_weeks": 97,
+    "test_weeks": 8,
+    "trainval_period": [
+        "2009-12-01 00:00:00",
+        "2011-10-11 00:00:00"
+    ],
+    "test_period": [
+        "2011-10-18 00:00:00",
+        "2011-12-06 00:00:00"
+    ],
+    "trainval_rows": 266200,
+    "test_rows": 22360
+}

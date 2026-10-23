@@ -1,0 +1,2058 @@
+{
+  "manifest_version": "v1.2",
+  "contract": "One-step-ahead SKU-week causal forecasting (h=1)",
+  "target_variable": "y_target",
+  "total_columns": 82,
+  "features": [
+    {
+      "feature_name": "sku_id",
+      "feature_family": "entity_coordinates",
+      "role": "metadata_key",
+      "definition": "Key / coordinate column: sku_id",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at prediction time",
+      "target_week_exclusion_rule": "N/A",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "NOT_APPLICABLE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "cohort_tier",
+      "feature_family": "entity_coordinates",
+      "role": "metadata_key",
+      "definition": "Key / coordinate column: cohort_tier",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at prediction time",
+      "target_week_exclusion_rule": "N/A",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "NOT_APPLICABLE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "period_role",
+      "feature_family": "entity_coordinates",
+      "role": "metadata_key",
+      "definition": "Key / coordinate column: period_role",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at prediction time",
+      "target_week_exclusion_rule": "N/A",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "NOT_APPLICABLE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_week",
+      "feature_family": "entity_coordinates",
+      "role": "metadata_key",
+      "definition": "Key / coordinate column: target_week",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at prediction time",
+      "target_week_exclusion_rule": "N/A",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "NOT_APPLICABLE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "feature_origin_week",
+      "feature_family": "entity_coordinates",
+      "role": "metadata_key",
+      "definition": "Key / coordinate column: feature_origin_week",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at prediction time",
+      "target_week_exclusion_rule": "N/A",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "NOT_APPLICABLE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "y_target",
+      "feature_family": "target_label",
+      "role": "label",
+      "definition": "Actual realized weekly demand units in target_week",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed only after target_week closes; NEVER in predictor matrix X",
+      "target_week_exclusion_rule": "Target variable; strictly isolated from predictors",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "CRITICAL (Target)",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_1",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 1 weeks prior to target_week (observed at w - 7d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 1w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_2",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 2 weeks prior to target_week (observed at w - 14d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 2w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_3",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 3 weeks prior to target_week (observed at w - 21d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 3w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_4",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 4 weeks prior to target_week (observed at w - 28d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 4w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_8",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 8 weeks prior to target_week (observed at w - 56d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 8w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_12",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 12 weeks prior to target_week (observed at w - 84d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 12w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_13",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 13 weeks prior to target_week (observed at w - 91d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 13w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_26",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "definition": "Weekly unit demand at 26 weeks prior to target_week (observed at w - 182d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 26w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_lag_52",
+      "feature_family": "demand_lags",
+      "role": "exploratory_only",
+      "definition": "Weekly unit demand at 52 weeks prior to target_week (observed at w - 364d)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Available at forecast origin (lag offset >= 52w)",
+      "target_week_exclusion_rule": "Target week strictly excluded (shift >= 1)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "has_lag_1",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "definition": "Binary indicator whether lag 1 is within observed SKU history",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at forecast origin",
+      "target_week_exclusion_rule": "Excludes target week",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "has_lag_4",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "definition": "Binary indicator whether lag 4 is within observed SKU history",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at forecast origin",
+      "target_week_exclusion_rule": "Excludes target week",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "has_lag_13",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "definition": "Binary indicator whether lag 13 is within observed SKU history",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at forecast origin",
+      "target_week_exclusion_rule": "Excludes target week",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "has_lag_52",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "definition": "Binary indicator whether lag 52 is within observed SKU history",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Known at forecast origin",
+      "target_week_exclusion_rule": "Excludes target week",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_mean_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling mean of past demand over trailing 4 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_min_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling min of past demand over trailing 4 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_max_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling max of past demand over trailing 4 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_std_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling std of past demand over trailing 4 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_zero_ratio_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling zero of past demand over trailing ratio weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_positive_rate_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling positive of past demand over trailing rate weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_mean_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling mean of past demand over trailing 8 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_min_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling min of past demand over trailing 8 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_max_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling max of past demand over trailing 8 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_std_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling std of past demand over trailing 8 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_zero_ratio_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling zero of past demand over trailing ratio weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_positive_rate_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling positive of past demand over trailing rate weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_mean_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling mean of past demand over trailing 12 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_min_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling min of past demand over trailing 12 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_max_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling max of past demand over trailing 12 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_std_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling std of past demand over trailing 12 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_zero_ratio_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling zero of past demand over trailing ratio weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_positive_rate_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling positive of past demand over trailing rate weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_mean_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling mean of past demand over trailing 13 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_min_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling min of past demand over trailing 13 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_max_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling max of past demand over trailing 13 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_std_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling std of past demand over trailing 13 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_zero_ratio_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling zero of past demand over trailing ratio weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_positive_rate_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling positive of past demand over trailing rate weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_mean_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling mean of past demand over trailing 26 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_min_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling min of past demand over trailing 26 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_max_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling max of past demand over trailing 26 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_std_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling std of past demand over trailing 26 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_zero_ratio_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling zero of past demand over trailing ratio weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_positive_rate_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling positive of past demand over trailing rate weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "ewma_demand_span_4",
+      "feature_family": "exponential_smoothing",
+      "role": "primary_candidate",
+      "definition": "Exponentially weighted moving average of past demand with span=4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "ewma_demand_span_12",
+      "feature_family": "exponential_smoothing",
+      "role": "primary_candidate",
+      "definition": "Exponentially weighted moving average of past demand with span=12",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_diff_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: demand_diff_1_2",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_diff_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: demand_diff_1_4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_growth_ratio_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: demand_growth_ratio_1_2",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "demand_growth_ratio_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: demand_growth_ratio_1_4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "is_zero_denominator_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: is_zero_denominator_1_2",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "is_zero_denominator_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "definition": "Demand dynamics/momentum metric: is_zero_denominator_1_4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed from completed historical lags",
+      "target_week_exclusion_rule": "Target week strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "rolling_cv_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "definition": "Rolling cv of past demand over trailing 8 weeks up to origin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Computed strictly on shifted demand y[w-7d]",
+      "target_week_exclusion_rule": "Target week y[w] strictly excluded (shift-before-roll)",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "txn_count_lag_1",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: txn_count_lag_1",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "txn_count_rolling_mean_4",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: txn_count_rolling_mean_4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "unique_customer_count_lag_1",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: unique_customer_count_lag_1",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "weeks_since_last_sale",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: weeks_since_last_sale",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "weeks_since_first_observed",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: weeks_since_first_observed",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "price_lag_1",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "definition": "Historical transaction price metric: price_lag_1",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Forward-filled from completed positive transactions prior to origin",
+      "target_week_exclusion_rule": "Target week transactions strictly excluded; no future backfill",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "price_rolling_mean_4",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "definition": "Historical transaction price metric: price_rolling_mean_4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Forward-filled from completed positive transactions prior to origin",
+      "target_week_exclusion_rule": "Target week transactions strictly excluded; no future backfill",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "last_observed_price",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "definition": "Historical transaction price metric: last_observed_price",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Forward-filled from completed positive transactions prior to origin",
+      "target_week_exclusion_rule": "Target week transactions strictly excluded; no future backfill",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "weeks_since_last_observed_price",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "definition": "Historical transaction / customer activity metric: weeks_since_last_observed_price",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Observed strictly prior to or at forecast origin",
+      "target_week_exclusion_rule": "Target week transaction and customer counts strictly excluded",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "has_observed_past_price",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "definition": "Historical transaction price metric: has_observed_past_price",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Forward-filled from completed positive transactions prior to origin",
+      "target_week_exclusion_rule": "Target week transactions strictly excluded; no future backfill",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "Low",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_week_of_year",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_week_of_year",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_month",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_month",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_quarter",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_quarter",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_week_sin",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_week_sin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_week_cos",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_week_cos",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_month_sin",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_month_sin",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_month_cos",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_month_cos",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_is_december",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_is_december",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_is_q4",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_is_q4",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "target_weeks_to_christmas",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "definition": "Deterministic calendar signal for target_week: target_weeks_to_christmas",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Deterministically known ahead of time from fixed ISO calendar",
+      "target_week_exclusion_rule": "Based on calendar date; no observational leakage",
+      "fit_scope": "ROW_LEVEL_TRANSFORMATION",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL",
+      "suspected_leakage_risk": "None",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "abc_demand_class",
+      "feature_family": "descriptive_descriptors",
+      "role": "metadata_only",
+      "definition": "Phase 2B descriptive classification: abc_demand_class (must be refitted per CV fold if used)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Calculated on 96-week dev pool; retained for reporting and ablation analysis",
+      "target_week_exclusion_rule": "Excluded from default predictor matrix X",
+      "fit_scope": "FOLD_SPECIFIC_TRAINING_FIT_REQUIRED",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "Moderate (if used unshifted across folds)",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "abc_value_class_panel",
+      "feature_family": "descriptive_descriptors",
+      "role": "metadata_only",
+      "definition": "Phase 2B descriptive classification: abc_value_class_panel (must be refitted per CV fold if used)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Calculated on 96-week dev pool; retained for reporting and ablation analysis",
+      "target_week_exclusion_rule": "Excluded from default predictor matrix X",
+      "fit_scope": "FOLD_SPECIFIC_TRAINING_FIT_REQUIRED",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "Moderate (if used unshifted across folds)",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "xyz_variability_class",
+      "feature_family": "descriptive_descriptors",
+      "role": "metadata_only",
+      "definition": "Phase 2B descriptive classification: xyz_variability_class (must be refitted per CV fold if used)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Calculated on 96-week dev pool; retained for reporting and ablation analysis",
+      "target_week_exclusion_rule": "Excluded from default predictor matrix X",
+      "fit_scope": "FOLD_SPECIFIC_TRAINING_FIT_REQUIRED",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "Moderate (if used unshifted across folds)",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    },
+    {
+      "feature_name": "sbc_regime",
+      "feature_family": "descriptive_descriptors",
+      "role": "metadata_only",
+      "definition": "Phase 2B descriptive classification: sbc_regime (must be refitted per CV fold if used)",
+      "source_table": "data/processed/sku_week_demand_v1_1.csv",
+      "source_columns": [
+        "demand",
+        "avg_unit_price",
+        "transaction_count",
+        "unique_customer_count"
+      ],
+      "event_time_column": "week_start",
+      "feature_origin_availability": "Calculated on 96-week dev pool; retained for reporting and ablation analysis",
+      "target_week_exclusion_rule": "Excluded from default predictor matrix X",
+      "fit_scope": "FOLD_SPECIFIC_TRAINING_FIT_REQUIRED",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "CATEGORICAL_STRING",
+      "suspected_leakage_risk": "Moderate (if used unshifted across folds)",
+      "test_ids": [
+        "test_feature_perturbation_invariance",
+        "test_target_week_perturbation_invariance",
+        "test_off_by_one_and_rolling_boundary"
+      ]
+    }
+  ]
+}

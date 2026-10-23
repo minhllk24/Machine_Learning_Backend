@@ -1,0 +1,9 @@
+dimension,specification,implementation_expression,verification_evidence,status,impact_assessment
+week_boundary,Standard ISO Monday-to-Sunday 7-day calendar week,InvoiceDate.dt.floor('D') - InvoiceDate.dt.dayofweek * pd.Timedelta(days=1),tests/test_weekly_boundaries.py,VERIFIED_CANONICAL,Boundary is strictly Monday 00:00:00 to Sunday 23:59:59.
+week_label,Monday calendar date of each 7-day interval,pd.Timestamp(week_start),data_contract.md Section 2.2,VERIFIED_CANONICAL,All models and panel keys use Monday date string YYYY-MM-DD.
+alias_clarification,Pandas W-MON vs ISO Monday Floor,dt.floor('D') - dt.dayofweek * 1 day (NOT resample('W-MON')),tests/test_weekly_boundaries.py,VERIFIED_CANONICAL,W-MON was used colloquially in narrative text; physical code strictly uses Monday floor.
+total_observed_weeks,106 weeks spanned from 2009-11-30 to 2011-12-05,all_weeks = pd.date_range(min_w max_w freq='7D'),data/processed/sku_week_demand_v1_1.csv,VERIFIED_CANONICAL,106 weeks in raw transaction span.
+excluded_boundary_weeks,2 partial boundary weeks (Week 1 and Week 106),period_role in ('EXCLUDED_BOUNDARY_START', 'EXCLUDED_BOUNDARY_END'),data_contract.md Section 2.3,VERIFIED_CANONICAL,Week 1 (6/7 days) and Week 106 (5/7 days) excluded from evaluation.
+valid_trading_weeks,104 full calendar weeks from 2009-12-07 to 2011-11-28,period_role in ('TRAIN_VALIDATION_POOL', 'FINAL_HOLDOUT', 'HOLIDAY_ZERO_DEMAND'),data/processed/sku_week_demand_v1_1.csv,VERIFIED_CANONICAL,Exact 104 contiguous complete weeks.
+development_pool_weeks,96 weeks from 2009-12-07 to 2011-10-03,week_start <= '2011-10-03' and week_start >= '2009-12-07',train_val_test_split_v1_1.json,VERIFIED_CANONICAL,Strict training cutoff at 2011-10-03.
+final_holdout_weeks,8 weeks from 2011-10-10 to 2011-11-28,week_start >= '2011-10-10' and week_start <= '2011-11-28',phase_08_holdout_freeze_manifest.json,VERIFIED_CANONICAL,Scored once in Phase 8; strictly immutable.

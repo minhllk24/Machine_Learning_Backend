@@ -1,0 +1,10 @@
+metric,value,notes,population_id,evaluation_scope
+Storewide Mean Weekly Demand,79545.33,Across 96 development weeks,STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Storewide Median Weekly Demand,72934.0,Across 96 development weeks,STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Storewide Std Weekly Demand,32748.76,Sample standard deviation (ddof=1),STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Storewide Min Weekly Demand (Holiday Closure),0.0,Occurred in Weeks 2009-12-28 & 2010-12-27 (0 units),STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Storewide Max Weekly Demand (Pre-Christmas Peak),200572.0,"Occurred in Week 2010-09-27 (200,572 units)",STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Lag 1 Autocorrelation (Persistence),0.4285,Strong serial persistence in aggregate volume,STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Lag 4 Autocorrelation (Monthly),0.2693,Moderate 4-week cycle persistence,STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+"Lag 52 Autocorrelation (Annual, Exploratory)",0.0299,Exploratory: 96 weeks is < 2 full years (n=44 pairs for lag 52),STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY
+Lag 52 Autocorrelation (Zero-Weeks Interpolated),-0.0262,Sensitivity check replacing 0s with adjacent mean,STOREWIDE_PANEL_V1_1_96W,DESCRIPTIVE_DEVELOPMENT_ONLY

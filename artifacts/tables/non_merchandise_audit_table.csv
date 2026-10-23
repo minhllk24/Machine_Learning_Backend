@@ -1,0 +1,12 @@
+StockCode,Classification_Category,Total_Occurrences,Total_Quantity,Min_Price,Max_Price,Sample_Descriptions,Exclusion_Reason,Audit_Status
+POST,Shipping & Carriage Fees,2122,10108,0.0,8142.75,POSTAGE; ,"Postal fee or delivery surcharge, not physical merchandise",DEFINITIVE_NON_MERCH
+D,"Discounts, Platform Fees & Donations",177,-2872,0.01,1867.86,Discount,Accounting line item or donation,DEFINITIVE_NON_MERCH
+M,Manual Administrative Line,1426,4612,0.0,38970.0,Manual,Manual invoice correction or non-catalog item,DEFINITIVE_NON_MERCH
+BANK CHARGES,Banking & Processing Fees,102,-42,0.001,18910.69, Bank Charges; Bank Charges,Financial transaction charge,DEFINITIVE_NON_MERCH
+PADS,Display Pads / Packaging,19,17,0.0,36.6,PADS TO MATCH ALL CUSHIONS,Promotional display pads (often £0.00),REVIEW_FLAG
+DOT,Shipping & Carriage Fees,1446,2938,0.0,4505.17,DOTCOM POSTAGE; ,"Postal fee or delivery surcharge, not physical merchandise",DEFINITIVE_NON_MERCH
+CRUK,"Discounts, Platform Fees & Donations",16,-16,1.6,1100.44,CRUK Commission,Accounting line item or donation,DEFINITIVE_NON_MERCH
+C2,Shipping & Carriage Fees,282,716,0.0,150.0,CARRIAGE; ,"Postal fee or delivery surcharge, not physical merchandise",DEFINITIVE_NON_MERCH
+AMAZONFEE,"Discounts, Platform Fees & Donations",43,-35,1.0,17836.46,AMAZON FEE,Accounting line item or donation,DEFINITIVE_NON_MERCH
+S,Sample / Bad Debt Adjustments,104,-98,2.8,605.18,SAMPLES,Samples or accounting write-offs,REVIEW_FLAG
+B,Sample / Bad Debt Adjustments,6,6,-53594.36,11062.06,Adjust bad debt,Samples or accounting write-offs,REVIEW_FLAG

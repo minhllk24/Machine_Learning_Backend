@@ -1,0 +1,6 @@
+model_id,unique_skus,unique_weeks,earliest_target_week,latest_target_week,target_weeks_aligned,duplicate_keys,key_audit_status
+CatBoost__MAE,2785,8,2011-10-10,2011-11-28,True,0,PASS
+CatBoost__Tweedie_p15,2785,8,2011-10-10,2011-11-28,True,0,PASS
+TiDE_Sequence_v1,2785,8,2011-10-10,2011-11-28,True,0,PASS
+MA_4,2785,8,2011-10-10,2011-11-28,True,0,PASS
+Naive_1,2785,8,2011-10-10,2011-11-28,True,0,PASS

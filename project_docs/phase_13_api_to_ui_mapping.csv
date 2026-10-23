@@ -1,0 +1,26 @@
+ui_screen_id,ui_component,ui_field_label,api_endpoint,http_method,response_json_path,data_type,transformation_or_format
+SCR-02,KpiCardGrid,Qualified Panel SKUs,/api/v1/dashboard/summary,GET,catalog_metrics.qualified_panel_skus,integer,Formatted with comma: 2785
+SCR-02,KpiCardGrid,Cleaned Catalog SKUs,/api/v1/dashboard/summary,GET,catalog_metrics.cleaned_catalog_skus,integer,Formatted with comma: 4905
+SCR-02,KpiCardGrid,Development Weeks,/api/v1/dashboard/summary,GET,dataset_coverage.development_period_weeks,integer,"96 weeks (2009-12-07 to 2011-10-03)"
+SCR-02,ModelStatusTable,Champion Model,/api/v1/dashboard/summary,GET,serving_models[?(@.role=='PRIMARY_CHAMPION')].model_id,string,Badge with CatBoost__MAE
+SCR-02,RecentRunsTable,Latest Forecast Status,/api/v1/dashboard/summary,GET,recent_runs[0].status,string,Badge: SUCCEEDED (Green) / RUNNING / FAILED
+SCR-03,ModelSelector,Serving Model Select,/api/v1/models,GET,models[?(@.serving_status=='READY')].model_id,string,Dropdown options filtered by serving readiness
+SCR-03,ForecastResultsChart,Predicted Demand Curve,/api/v1/forecasts,POST,forecasts[*].predicted_demand,number[],Line series plotted against target_week
+SCR-03,ForecastDataTable,Target Week Date,/api/v1/forecasts,POST,forecasts[*].target_week,string,Date formatted as ISO YYYY-MM-DD
+SCR-03,ForecastDataTable,Point Forecast Units,/api/v1/forecasts,POST,forecasts[*].predicted_demand,number,Formatted with 2 decimals
+SCR-04,SkuDataTable,Stock Code ID,/api/v1/skus,GET,items[*].sku_id,string,Monospace raw string preserved
+SCR-04,SkuDataTable,Catalog Description,/api/v1/skus,GET,items[*].description,string,Fallback to (No description) if null
+SCR-04,SkuDataTable,Cohort Tier,/api/v1/skus,GET,items[*].cohort,string,Pill: Mature (Blue) / Late-Maturing (Purple)
+SCR-04,SkuDataTable,ABC Demand Class,/api/v1/skus,GET,items[*].abc_class,string,Badge: Class A (Green) / Class B (Yellow) / Class C (Gray)
+SCR-04,SkuDataTable,SBC Intermittency Regime,/api/v1/skus,GET,items[*].sbc_regime,string,Tag: Smooth / Erratic / Intermittent / Lumpy
+SCR-05,HistoricalTimeSeriesChart,Weekly Sales History,/api/v1/skus/{sku_id}/history,GET,history[*].demand,number[],Bar chart of weekly quantities with zero-fill
+SCR-05,MetricPillGroup,Mean Historical Demand,/api/v1/skus/{sku_id},GET,stats.mean_weekly_demand,number,Formatted with 2 decimals
+SCR-06,SuggestedOrderBanner,Suggested Replenishment Qty,/api/v1/planning/replenish,POST,suggested_replenishment_qty,number,Highlighted bold callout: max(0 Gross - Net Pos)
+SCR-06,PolicyAssumptionCard,Net Lead-Time Demand,/api/v1/planning/replenish,POST,net_lead_time_demand_units,number,Sum of weekly forecasts across lead-time
+SCR-06,PolicyAssumptionCard,Policy Status Disclaimer,/api/v1/planning/replenish,POST,policy_status,string,Mandatory banner: SIMULATION_BASED_ON_USER_ASSUMPTIONS
+SCR-08,RunHistoryTable,Run Identification Key,/api/v1/forecasts/runs,GET,runs[*].forecast_run_id,string,UUID truncated for display with copy button
+SCR-08,RunHistoryTable,Forecast Origin Date,/api/v1/forecasts/runs,GET,runs[*].origin_date,string,Date formatted YYYY-MM-DD
+SCR-08,RunHistoryTable,Horizon Steps,/api/v1/forecasts/runs,GET,runs[*].horizon_weeks,integer,"e.g., 4 weeks (H=4)"
+SCR-08,DownloadButton,File Download Link,/api/v1/forecasts/runs/{id}/exports,POST,download_url,string,Direct streaming download path
+SCR-09,RegistryDataTable,Artifact SHA-256 Checksum,/api/v1/models,GET,models[*].sha256_hash,string,Truncated first 12 chars with full hash tooltip
+SCR-09,HealthBadgeGroup,System Readiness Probe,/health/ready,GET,status,string,Operational indicator: READY (Green) / NOT_READY

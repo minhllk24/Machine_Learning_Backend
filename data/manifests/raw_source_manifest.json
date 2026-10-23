@@ -1,0 +1,37 @@
+{
+  "dataset_name": "UCI Online Retail II",
+  "citation": "Chen, D. (2012). Online Retail II [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5CG6D",
+  "doi": "10.24432/C5CG6D",
+  "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+  "upstream_url": "https://archive.ics.uci.edu/dataset/502/online+retail+ii",
+  "local_file_path": "data/raw/online_retail_II.xlsx",
+  "file_size_bytes": 45622278,
+  "sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+  "sheets": [
+    {
+      "sheet_name": "Year 2009-2010",
+      "row_count": 525461,
+      "column_count": 8,
+      "date_range": ["2009-12-01 07:45:00", "2010-12-09 20:01:00"]
+    },
+    {
+      "sheet_name": "Year 2010-2011",
+      "row_count": 541910,
+      "column_count": 8,
+      "date_range": ["2010-12-01 08:26:00", "2011-12-09 12:50:00"]
+    }
+  ],
+  "total_raw_rows": 1067371,
+  "total_raw_columns": 8,
+  "schema": {
+    "Invoice": "VARCHAR(20) - Invoice number, 6-digit integer; if starts with 'C', indicates cancellation",
+    "StockCode": "VARCHAR(30) - Product (item) code, 5-digit integer or alphanumeric code",
+    "Description": "TEXT - Product (item) name",
+    "Quantity": "INTEGER - The quantities of each product (item) per transaction",
+    "InvoiceDate": "DATETIME - The day and time when each transaction was generated",
+    "Price": "DECIMAL(10,4) - Unit price in Sterling (£)",
+    "CustomerID": "VARCHAR(20) - 5-digit integer customer number; can be null for anonymous guests",
+    "Country": "VARCHAR(50) - The name of the country where each customer resides"
+  },
+  "raw_invariance_policy": "Immutable. No in-place modification allowed. SHA-256 verified at intake."
+}

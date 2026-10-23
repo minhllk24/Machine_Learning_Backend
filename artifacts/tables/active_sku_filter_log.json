@@ -1,0 +1,9 @@
+{
+    "total_skus_before_filter": 4905,
+    "active_skus": 2795,
+    "filtered_out": 2110,
+    "min_active_weeks": 10,
+    "min_total_demand": 50,
+    "early_cutoff": "2010-04-27 00:00:00",
+    "total_weeks_in_data": 105
+}

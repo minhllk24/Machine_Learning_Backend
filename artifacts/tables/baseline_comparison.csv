@@ -1,0 +1,8 @@
+,MAE,RMSE,WAPE,sMAPE,Bias,R2,MASE
+Naive (t-1),,,,,,,
+Seasonal Naive (t-4),,,,,,,
+Seasonal Naive (t-52),,,,,,,
+SMA (4 weeks),,,,,,,
+SMA (8 weeks),,,,,,,
+Exponential Smoothing (Span 4),,,,,,,
+Croston-heuristic,,,,,,,

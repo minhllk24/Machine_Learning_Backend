@@ -1,32 +1,121 @@
-# Byte-compiled / optimized / DLL files
+# =====================================================================
+# Git Ignore - Machine Learning Backend & Demand Forecasting Platform
+# Unified Security & Release Specification
+# =====================================================================
+
+# 1. Environment Secrets & Credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa*
+*.secret
+
+# 2. Local Runtime Databases & Generated User Exports
+*.db
+*.sqlite
+*.sqlite3
+data/backend_storage/*.sqlite3
+data/backend_storage/*.db
+artifacts/exports/*
+!artifacts/exports/.gitkeep
+
+# 3. Python Cache & Build Artifacts
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C environments
+*.so
 .Python
 env/
 venv/
 .venv/
 ENV/
+build/
+develop-eggs/
+dist/
+!frontend/dist/
+!frontend/dist/**
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Data files (lớn)
-*.xlsx
-*.csv
+# 4. Testing, Coverage & Diagnostics
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+htmlcov/
+catboost_info/
+
+# 5. Node / Frontend Dependencies & Temp Files
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+frontend/.vite/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.turbo
+
+# 6. IDEs & Operating System Artifacts
+.remote-code-express/
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+desktop.ini
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# 7. Heavy Raw Data Files & Redundant Downloads
+# Exclude raw 43MB Excel and duplicate directory
+online_retail_ii/
+data/raw/*.xlsx
 *.sql
 *.zip
 
-# Model files nặng
-models_saved/*.joblib
+# 8. Scratch Reading Scripts & Prompts
+ANTIGRAVITY_*
+read_docx*.py
+read_pdfs.py
 
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
 
-# OS
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-.DS_Store
+# Allow benchmark metric tables and panel data essential for API serving
+!artifacts/tables/
+!artifacts/tables/*.csv
+!artifacts/tables/**/*.csv
+!data/manifests/
+!data/manifests/*.csv
+!data/processed/sku_week_demand_v1_1.csv
+!data/processed/feature_manifest_v1_2.json
+!data/processed/train_val_test_split_v1_1.json

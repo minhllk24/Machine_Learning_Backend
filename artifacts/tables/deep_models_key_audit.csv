@@ -1,0 +1,3 @@
+model_name,total_rows,unique_keys,duplicate_keys_count,has_duplicate_keys,exact_match_with_baseline_keys,primary_cohort_rows,secondary_cohort_rows
+TiDE__primary_config,111400,111400,0,False,True,68680,42720
+TFT__primary_config,111400,111400,0,False,True,68680,42720

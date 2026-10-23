@@ -1,0 +1,8 @@
+step,stage,rule,rows_before,rows_excluded,rows_after,pct_of_raw
+0,Raw Ingestion,All raw transactions,1067371,0,1067371,100.0
+1,Exact Duplicates,Drop exact row-level duplicates,1067371,34335,1033036,96.78
+2,Cancellations,Drop invoices starting with C (returns/voids),1033036,19104,1013932,94.99
+3,Quantity <= 0,Drop remaining non-positive quantities,1013932,3393,1010539,94.68
+4,Price <= 0,Drop zero or negative unit price,1010539,2626,1007913,94.43
+5,Non-Merchandise Lines,"Drop postal fees, bank charges, manual items",1007913,4447,1003466,94.01
+6,Missing CustomerID Policy,"Retain valid sales for guest/anonymous buyers (226,842 rows)",1003466,0,1003466,94.01

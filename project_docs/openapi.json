@@ -1,0 +1,4207 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Retail SKU-Week Demand Forecasting & Inventory Planning API",
+    "description": "Production-grade FastAPI backend for Retail SKU-Week Demand Forecasting & Inventory Planning. Implements Model Registry governance, strict predictor allowlist verification, and versioned forecasting contract scaffolding.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health/live": {
+      "get": {
+        "tags": [
+          "Health & Lifecycle"
+        ],
+        "summary": "Application Process Liveness Probe",
+        "description": "Indicates whether the FastAPI HTTP server process is running and responsive. Does NOT guarantee model inference readiness.",
+        "operationId": "get_liveness_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthLiveResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "Health & Lifecycle"
+        ],
+        "summary": "Component Operational Readiness Probe",
+        "description": "Inspects individual backend component readiness. Differentiates between API/Registry availability and live model serving readiness.",
+        "operationId": "get_readiness_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthReadyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "Authenticate user credentials",
+        "description": "Authenticates username and password, returning an HMAC-SHA256 signed JWT bearer token and user profile.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "Terminate active session",
+        "description": "Revokes the active bearer JWT token by adding its JTI to the server revocation blacklist.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer JWT access token",
+              "title": "Authorization"
+            },
+            "description": "Bearer JWT access token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "Get current user identity",
+        "description": "Returns profile and active roles for the authenticated token holder.",
+        "operationId": "get_me_api_v1_auth_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer JWT access token",
+              "title": "Authorization"
+            },
+            "description": "Bearer JWT access token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/users": {
+      "get": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "List system accounts (Admin Only)",
+        "description": "Returns all registered user accounts and their assigned RBAC roles. Restricted to administrators.",
+        "operationId": "list_users_api_v1_auth_users_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer JWT access token",
+              "title": "Authorization"
+            },
+            "description": "Bearer JWT access token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserProfileResponse"
+                  },
+                  "title": "Response List Users Api V1 Auth Users Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "Create new user account (Admin Only)",
+        "description": "Provisions a new user account with specified RBAC role. Restricted to administrators.",
+        "operationId": "create_user_api_v1_auth_users_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer JWT access token",
+              "title": "Authorization"
+            },
+            "description": "Bearer JWT access token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/bootstrap": {
+      "post": {
+        "tags": [
+          "Authentication & Access Control"
+        ],
+        "summary": "Secure administrative bootstrap",
+        "description": "One-time secure initialization or password rotation of the root administrator account.",
+        "operationId": "bootstrap_admin_api_v1_auth_bootstrap_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BootstrapAdminRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models": {
+      "get": {
+        "tags": [
+          "Model Registry"
+        ],
+        "summary": "List Registered Models",
+        "description": "Returns filtered list of model artifacts and their governance statuses without loading weights.",
+        "operationId": "list_models_api_v1_models_get",
+        "parameters": [
+          {
+            "name": "artifact_role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ArtifactRole"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by lifecycle role (e.g., CV_ARTIFACT, SERVING_READY)",
+              "title": "Artifact Role"
+            },
+            "description": "Filter by lifecycle role (e.g., CV_ARTIFACT, SERVING_READY)"
+          },
+          {
+            "name": "serving_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ServingStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by serving status (e.g., NOT_READY, SERVING_READY)",
+              "title": "Serving Status"
+            },
+            "description": "Filter by serving status (e.g., NOT_READY, SERVING_READY)"
+          },
+          {
+            "name": "cohort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by customer cohort (CAUSAL_MATURE or LATE_MATURING)",
+              "title": "Cohort"
+            },
+            "description": "Filter by customer cohort (CAUSAL_MATURE or LATE_MATURING)"
+          },
+          {
+            "name": "framework",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by ML framework (lightgbm, catboost, baseline)",
+              "title": "Framework"
+            },
+            "description": "Filter by ML framework (lightgbm, catboost, baseline)"
+          },
+          {
+            "name": "entry_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RegistryEntryType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by registry entry type (MODEL_ARTIFACT or BASELINE_BENCHMARK)",
+              "title": "Entry Type"
+            },
+            "description": "Filter by registry entry type (MODEL_ARTIFACT or BASELINE_BENCHMARK)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}": {
+      "get": {
+        "tags": [
+          "Model Registry"
+        ],
+        "summary": "Get Model Governance Metadata",
+        "description": "Returns full audited metadata and training provenance for a specific model ID. Excludes sensitive internal filesystem paths.",
+        "operationId": "get_model_api_v1_models__model_id__get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical model identifier",
+              "title": "Model Id"
+            },
+            "description": "Canonical model identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}/forecast-capabilities": {
+      "get": {
+        "tags": [
+          "Model Registry"
+        ],
+        "summary": "Get Model Forecast Capabilities",
+        "description": "Returns verified forecasting operational capabilities, supported horizons, and audited blocker reasons for a model.",
+        "operationId": "get_model_capabilities_api_v1_models__model_id__forecast_capabilities_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical model identifier",
+              "title": "Model Id"
+            },
+            "description": "Canonical model identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastCapabilitiesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts": {
+      "post": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Generate SKU-Week Demand Forecast",
+        "description": "Initiates demand forecasting for a list of SKUs and a given forecast horizon. \n\n**Governance Notice:** All currently registered models are designated as `CV_ARTIFACT` with `serving_status = NOT_READY`. Invocations will return HTTP 409 (`MODEL_NOT_READY_FOR_SERVING`) with detailed blockers until Phase 7 Champion Freeze and Phase 8 Serving Inference are implemented. **No synthetic predictions are emitted.**",
+        "operationId": "create_forecast_api_v1_forecasts_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForecastRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient Role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Model Not Found in Registry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Model Not Ready for Serving",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error (invalid dates, duplicate SKUs, etc.)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "List Executed Forecast Runs",
+        "description": "Returns paginated history of executed forecast runs with optional filtering by status, model, and date range.",
+        "operationId": "list_forecast_runs_api_v1_forecasts_runs_get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number (1-indexed)",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number (1-indexed)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Items per page",
+              "default": 50,
+              "title": "Page Size"
+            },
+            "description": "Items per page"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by run status: RUNNING, SUCCEEDED, FAILED",
+              "title": "Status"
+            },
+            "description": "Filter by run status: RUNNING, SUCCEEDED, FAILED"
+          },
+          {
+            "name": "model_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by model identifier",
+              "title": "Model Id"
+            },
+            "description": "Filter by model identifier"
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by created_at_utc >= from_date",
+              "title": "From Date"
+            },
+            "description": "Filter by created_at_utc >= from_date"
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by created_at_utc <= to_date",
+              "title": "To Date"
+            },
+            "description": "Filter by created_at_utc <= to_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastRunListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs/{forecast_run_id}": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Get Forecast Run Metadata",
+        "description": "Retrieves exhaustive execution parameters, status, and metadata for a specific forecast run.",
+        "operationId": "get_forecast_run_api_v1_forecasts_runs__forecast_run_id__get",
+        "parameters": [
+          {
+            "name": "forecast_run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical UUID of the forecast run",
+              "title": "Forecast Run Id"
+            },
+            "description": "Canonical UUID of the forecast run"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastRunDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Unauthorized Object Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Forecast Run Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs/{forecast_run_id}/results": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Get Run Prediction Records",
+        "description": "Returns paginated SKU-week prediction outputs belonging strictly to the requested forecast run.",
+        "operationId": "get_forecast_run_results_api_v1_forecasts_runs__forecast_run_id__results_get",
+        "parameters": [
+          {
+            "name": "forecast_run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical UUID of the forecast run",
+              "title": "Forecast Run Id"
+            },
+            "description": "Canonical UUID of the forecast run"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number (1-indexed)",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number (1-indexed)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "description": "Items per page",
+              "default": 100,
+              "title": "Page Size"
+            },
+            "description": "Items per page"
+          },
+          {
+            "name": "sku_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter predictions by specific SKU ID",
+              "title": "Sku Id"
+            },
+            "description": "Filter predictions by specific SKU ID"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastRecordListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Unauthorized Object Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Forecast Run Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs/{forecast_run_id}/exports": {
+      "post": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Generate CSV or XLSX Export",
+        "description": "Generates a downloadable CSV or Excel export from a completed (SUCCEEDED) forecast run. Calculates cryptographic SHA-256 and records managed artifact metadata.",
+        "operationId": "create_forecast_export_api_v1_forecasts_runs__forecast_run_id__exports_post",
+        "parameters": [
+          {
+            "name": "forecast_run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical UUID of the forecast run",
+              "title": "Forecast Run Id"
+            },
+            "description": "Canonical UUID of the forecast run"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportArtifactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Run Not Completed (cannot export non-SUCCEEDED run)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient Role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Forecast Run Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid Export Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs/{forecast_run_id}/exports/{export_id}": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Get Export Artifact Metadata",
+        "description": "Retrieves metadata (row count, size, sha256 checksum) for an existing export artifact.",
+        "operationId": "get_forecast_export_api_v1_forecasts_runs__forecast_run_id__exports__export_id__get",
+        "parameters": [
+          {
+            "name": "forecast_run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical UUID of the forecast run",
+              "title": "Forecast Run Id"
+            },
+            "description": "Canonical UUID of the forecast run"
+          },
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique export identifier",
+              "title": "Export Id"
+            },
+            "description": "Unique export identifier"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportArtifactResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Unauthorized Object Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Export Artifact Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/runs/{forecast_run_id}/exports/{export_id}/download": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "summary": "Download Export File",
+        "description": "Streams the physical CSV or Excel export file from the managed export storage.",
+        "operationId": "download_forecast_export_api_v1_forecasts_runs__forecast_run_id__exports__export_id__download_get",
+        "parameters": [
+          {
+            "name": "forecast_run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Canonical UUID of the forecast run",
+              "title": "Forecast Run Id"
+            },
+            "description": "Canonical UUID of the forecast run"
+          },
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique export identifier",
+              "title": "Export Id"
+            },
+            "description": "Unique export identifier"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Unauthorized Object Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Export Artifact Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Export File Missing or Corrupt on Server",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skus": {
+      "get": {
+        "tags": [
+          "SKU Explorer"
+        ],
+        "summary": "List and Filter Product SKUs",
+        "description": "Returns a paginated list of merchandise SKUs in the catalog with demand statistics, ABC-XYZ classes, and cohort tiers.",
+        "operationId": "list_skus_api_v1_skus_get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number (1-indexed)",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number (1-indexed)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "description": "Items per page",
+              "default": 50,
+              "title": "Page Size"
+            },
+            "description": "Items per page"
+          },
+          {
+            "name": "cohort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by cohort tier: CAUSAL_MATURE or LATE_MATURING",
+              "title": "Cohort"
+            },
+            "description": "Filter by cohort tier: CAUSAL_MATURE or LATE_MATURING"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search SKU ID prefix or substring",
+              "title": "Search"
+            },
+            "description": "Search SKU ID prefix or substring"
+          },
+          {
+            "name": "abc_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by ABC demand volume tier (A, B, C)",
+              "title": "Abc Class"
+            },
+            "description": "Filter by ABC demand volume tier (A, B, C)"
+          },
+          {
+            "name": "sbc_regime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by SBC regime: Smooth, Intermittent, Erratic, Lumpy",
+              "title": "Sbc Regime"
+            },
+            "description": "Filter by SBC regime: Smooth, Intermittent, Erratic, Lumpy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SKUListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skus/{sku_id}": {
+      "get": {
+        "tags": [
+          "SKU Explorer"
+        ],
+        "summary": "Get SKU Detail & Metadata",
+        "description": "Retrieves comprehensive metadata, classification tiers, and historical demand metrics for a specific SKU.",
+        "operationId": "get_sku_detail_api_v1_skus__sku_id__get",
+        "parameters": [
+          {
+            "name": "sku_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique product SKU identifier",
+              "title": "Sku Id"
+            },
+            "description": "Unique product SKU identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SKUDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "SKU Not Found in Catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skus/{sku_id}/history": {
+      "get": {
+        "tags": [
+          "SKU Explorer"
+        ],
+        "summary": "Get SKU Demand Time Series History",
+        "description": "Returns the complete chronological weekly demand and activity time series across the 96 development weeks.",
+        "operationId": "get_sku_history_api_v1_skus__sku_id__history_get",
+        "parameters": [
+          {
+            "name": "sku_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique product SKU identifier",
+              "title": "Sku Id"
+            },
+            "description": "Unique product SKU identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SKUHistoryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "SKU Not Found in Catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get Executive Platform Summary",
+        "description": "Returns executive metadata summarizing catalog scale, timeline boundaries, production model readiness, service health, and formal governance boundaries.",
+        "operationId": "get_dashboard_summary_api_v1_dashboard_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/planning/replenish": {
+      "post": {
+        "tags": [
+          "Inventory Planning"
+        ],
+        "summary": "Simulate Inventory Replenishment Order",
+        "description": "Simulates a periodic-review replenishment order quantity based on forecast demand, user-specified safety stock, on-hand inventory, and incoming stock. \n\n**Governance Notice:** The result is strictly tagged as `SIMULATION_BASED_ON_USER_ASSUMPTIONS`. Safety stock has not been mathematically proven or optimized. Do not treat as an optimal inventory guarantee.",
+        "operationId": "simulate_replenishment_api_v1_planning_replenish_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplenishmentSimulationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplenishmentSimulationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient Role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Forecast Run or SKU Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArtifactRole": {
+        "type": "string",
+        "enum": [
+          "CV_ARTIFACT",
+          "CANDIDATE",
+          "PRODUCTION_CANDIDATE",
+          "FROZEN_MODEL",
+          "INFERENCE_TESTED",
+          "SERVING_READY"
+        ],
+        "title": "ArtifactRole"
+      },
+      "BackendServicesHealth": {
+        "properties": {
+          "persistence_sqlite": {
+            "type": "string",
+            "title": "Persistence Sqlite",
+            "description": "SQLite ACID database status",
+            "default": "HEALTHY"
+          },
+          "model_registry": {
+            "type": "string",
+            "title": "Model Registry",
+            "description": "Model Registry integrity status",
+            "default": "HEALTHY"
+          },
+          "allowlist_verified": {
+            "type": "boolean",
+            "title": "Allowlist Verified",
+            "description": "Strict predictor allowlist cryptographic hash verification",
+            "default": true
+          },
+          "export_service": {
+            "type": "string",
+            "title": "Export Service",
+            "description": "CSV/XLSX export storage engine status",
+            "default": "HEALTHY"
+          }
+        },
+        "type": "object",
+        "title": "BackendServicesHealth",
+        "description": "Operational status of core backend services."
+      },
+      "BootstrapAdminRequest": {
+        "properties": {
+          "admin_password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Admin Password",
+            "description": "Secure initial password for administrator"
+          },
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "description": "Whether to reset password if admin already exists",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "admin_password"
+        ],
+        "title": "BootstrapAdminRequest"
+      },
+      "CandidateModelStatus": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Canonical model candidate identifier"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Pre-registered governance role"
+          },
+          "serving_status": {
+            "type": "string",
+            "title": "Serving Status",
+            "description": "Current serving status: SERVING_READY or NOT_READY"
+          },
+          "supported_horizons": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Supported Horizons",
+            "description": "Verified multi-week horizons supported"
+          },
+          "holdout_h4_wape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Holdout H4 Wape Pct",
+            "description": "Frozen holdout WAPE percentage at H=4 (CAUSAL_MATURE)"
+          },
+          "holdout_h4_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Holdout H4 Mae",
+            "description": "Frozen holdout MAE at H=4 (CAUSAL_MATURE)"
+          },
+          "holdout_h4_bias_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Holdout H4 Bias Pct",
+            "description": "Frozen holdout Signed Bias percentage at H=4 (CAUSAL_MATURE)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "role",
+          "serving_status",
+          "supported_horizons"
+        ],
+        "title": "CandidateModelStatus",
+        "description": "Readiness and holdout performance summary for registered model candidates."
+      },
+      "CatalogSummary": {
+        "properties": {
+          "total_skus": {
+            "type": "integer",
+            "title": "Total Skus",
+            "description": "Total qualified merchandise SKUs in universe",
+            "default": 2785
+          },
+          "primary_cohort_skus": {
+            "type": "integer",
+            "title": "Primary Cohort Skus",
+            "description": "Count of CAUSAL_MATURE primary SKUs",
+            "default": 1717
+          },
+          "secondary_cohort_skus": {
+            "type": "integer",
+            "title": "Secondary Cohort Skus",
+            "description": "Count of LATE_MATURING secondary SKUs",
+            "default": 1068
+          }
+        },
+        "type": "object",
+        "title": "CatalogSummary",
+        "description": "Product catalog and cohort partition breakdown."
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 2,
+            "title": "Username",
+            "description": "New account username"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "title": "Password",
+            "description": "Account initial password"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Role assignment: admin, analyst, planner, viewer"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name",
+            "description": "Optional full display name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password",
+          "role"
+        ],
+        "title": "CreateUserRequest"
+      },
+      "DashboardSummaryResponse": {
+        "properties": {
+          "system_status": {
+            "type": "string",
+            "title": "System Status",
+            "description": "Overall platform status",
+            "default": "OPERATIONAL"
+          },
+          "dataset_version": {
+            "type": "string",
+            "title": "Dataset Version",
+            "description": "Cleaned demand panel version",
+            "default": "v1.1"
+          },
+          "feature_schema_version": {
+            "type": "string",
+            "title": "Feature Schema Version",
+            "description": "Feature pipeline schema version",
+            "default": "v1.2"
+          },
+          "catalog": {
+            "$ref": "#/components/schemas/CatalogSummary"
+          },
+          "timeline": {
+            "$ref": "#/components/schemas/TimelineSummary"
+          },
+          "backend_services": {
+            "$ref": "#/components/schemas/BackendServicesHealth"
+          },
+          "candidate_models": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateModelStatus"
+            },
+            "type": "array",
+            "title": "Candidate Models"
+          },
+          "recent_forecast_runs": {
+            "$ref": "#/components/schemas/RecentRunsSummary"
+          },
+          "governance": {
+            "$ref": "#/components/schemas/EvaluationGovernance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "catalog",
+          "timeline",
+          "backend_services",
+          "candidate_models",
+          "recent_forecast_runs",
+          "governance"
+        ],
+        "title": "DashboardSummaryResponse",
+        "description": "Consolidated executive dashboard summary response."
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error_code": {
+            "type": "string",
+            "title": "Error Code",
+            "description": "Machine-readable error identifier",
+            "examples": [
+              "MODEL_NOT_READY_FOR_SERVING"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Human-readable explanation of the error",
+            "examples": [
+              "Model is not ready for serving."
+            ]
+          },
+          "details": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details",
+            "description": "Structured error details, validation issues, or readiness blockers"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id",
+            "description": "Unique correlation ID for tracing the request",
+            "examples": [
+              "req_abc123"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "error_code",
+          "message"
+        ],
+        "title": "ErrorResponse",
+        "description": "Standardized error envelope returned across all API error conditions."
+      },
+      "EvaluationGovernance": {
+        "properties": {
+          "final_test_evaluation_completed": {
+            "type": "boolean",
+            "title": "Final Test Evaluation Completed",
+            "description": "Holdout evaluation executed once against locked predictions",
+            "default": true
+          },
+          "model_selection_protocol_preserved": {
+            "type": "boolean",
+            "title": "Model Selection Protocol Preserved",
+            "description": "Selection protocol frozen without post-hoc modification",
+            "default": true
+          },
+          "serving_inference_validated": {
+            "type": "boolean",
+            "title": "Serving Inference Validated",
+            "description": "Inference pipeline verified end-to-end with parity assertions",
+            "default": true
+          },
+          "current_market_applicability_assessed": {
+            "type": "boolean",
+            "title": "Current Market Applicability Assessed",
+            "description": "Whether current live market applicability has been verified",
+            "default": false
+          },
+          "governance_note": {
+            "type": "string",
+            "title": "Governance Note",
+            "description": "Explicit limitation notice",
+            "default": "Trained on historical 2009-2011 UCI Online Retail II dataset. External validity in live contemporary retail markets has NOT been verified."
+          }
+        },
+        "type": "object",
+        "title": "EvaluationGovernance",
+        "description": "Formal Four-Way Boundary Classification status."
+      },
+      "ExportArtifactResponse": {
+        "properties": {
+          "export_id": {
+            "type": "string",
+            "title": "Export Id",
+            "description": "Unique UUID for this export artifact"
+          },
+          "forecast_run_id": {
+            "type": "string",
+            "title": "Forecast Run Id",
+            "description": "Associated forecast run ID"
+          },
+          "format": {
+            "$ref": "#/components/schemas/ExportFormat",
+            "description": "File format: CSV or XLSX"
+          },
+          "row_count": {
+            "type": "integer",
+            "title": "Row Count",
+            "description": "Number of data rows exported"
+          },
+          "file_size_bytes": {
+            "type": "integer",
+            "title": "File Size Bytes",
+            "description": "Size of exported file on disk"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256",
+            "description": "Cryptographic SHA-256 hash of export file"
+          },
+          "created_at_utc": {
+            "type": "string",
+            "title": "Created At Utc",
+            "description": "UTC ISO generation timestamp"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExportStatus",
+            "description": "Export status: COMPLETED or FAILED"
+          },
+          "download_url": {
+            "type": "string",
+            "title": "Download Url",
+            "description": "API download URL for the artifact"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "Authenticated user ID who requested the export"
+          }
+        },
+        "type": "object",
+        "required": [
+          "export_id",
+          "forecast_run_id",
+          "format",
+          "row_count",
+          "file_size_bytes",
+          "sha256",
+          "created_at_utc",
+          "status",
+          "download_url"
+        ],
+        "title": "ExportArtifactResponse",
+        "description": "Metadata response for a generated export artifact."
+      },
+      "ExportFormat": {
+        "type": "string",
+        "enum": [
+          "CSV",
+          "XLSX"
+        ],
+        "title": "ExportFormat"
+      },
+      "ExportRequest": {
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/ExportFormat",
+            "description": "Export file format: CSV or XLSX",
+            "default": "CSV"
+          }
+        },
+        "type": "object",
+        "title": "ExportRequest",
+        "description": "Request payload to generate a downloadable export."
+      },
+      "ExportStatus": {
+        "type": "string",
+        "enum": [
+          "COMPLETED",
+          "FAILED"
+        ],
+        "title": "ExportStatus"
+      },
+      "ForecastCapabilitiesResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Unique model identifier"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "Model name"
+          },
+          "cohort": {
+            "type": "string",
+            "title": "Cohort",
+            "description": "Applicable cohort scope"
+          },
+          "artifact_role": {
+            "$ref": "#/components/schemas/ArtifactRole",
+            "description": "Governance role"
+          },
+          "serving_status": {
+            "$ref": "#/components/schemas/ServingStatus",
+            "description": "Serving readiness"
+          },
+          "serving_ready": {
+            "type": "boolean",
+            "title": "Serving Ready",
+            "description": "Boolean flag: whether this model can currently execute live inference"
+          },
+          "supported_horizons": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Supported Horizons",
+            "description": "Supported multi-week horizon steps"
+          },
+          "sku_eligibility_requirements": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Sku Eligibility Requirements",
+            "description": "Data requirements (minimum history, active weeks) for input SKUs"
+          },
+          "forecasting_strategy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forecasting Strategy",
+            "description": "Forecast generation method (e.g., direct_one_step, recursive_autoregressive, not_implemented)"
+          },
+          "limitations_and_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations And Reasons",
+            "description": "Comprehensive list of operational limits and missing validation stages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "model_name",
+          "cohort",
+          "artifact_role",
+          "serving_status",
+          "serving_ready",
+          "limitations_and_reasons"
+        ],
+        "title": "ForecastCapabilitiesResponse",
+        "description": "Operational forecasting capabilities and limitation disclosures for a model."
+      },
+      "ForecastRecordListResponse": {
+        "properties": {
+          "forecast_run_id": {
+            "type": "string",
+            "title": "Forecast Run Id",
+            "description": "Target forecast run identifier"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total prediction records in run matching filter"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "Current page number"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size",
+            "description": "Page size limit"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastRecordResponse"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of prediction records"
+          }
+        },
+        "type": "object",
+        "required": [
+          "forecast_run_id",
+          "total",
+          "page",
+          "page_size",
+          "items"
+        ],
+        "title": "ForecastRecordListResponse",
+        "description": "Paginated list of prediction records for a specific forecast run."
+      },
+      "ForecastRecordResponse": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Target SKU identifier"
+          },
+          "target_week": {
+            "type": "string",
+            "title": "Target Week",
+            "description": "Monday week boundary (YYYY-MM-DD)"
+          },
+          "horizon_step": {
+            "type": "integer",
+            "title": "Horizon Step",
+            "description": "1-indexed horizon step"
+          },
+          "prediction": {
+            "type": "number",
+            "title": "Prediction",
+            "description": "Clipped/final predicted demand units"
+          },
+          "prediction_raw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prediction Raw",
+            "description": "Raw unclipped model output if available"
+          },
+          "prediction_status": {
+            "type": "string",
+            "title": "Prediction Status",
+            "description": "Status tag: INFERRED, HEURISTIC, FALLBACK"
+          },
+          "clipped_at_zero": {
+            "type": "boolean",
+            "title": "Clipped At Zero",
+            "description": "Whether prediction was clipped to 0 from a negative value",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "target_week",
+          "horizon_step",
+          "prediction",
+          "prediction_status"
+        ],
+        "title": "ForecastRecordResponse",
+        "description": "Detailed persisted forecast record for a SKU and target week."
+      },
+      "ForecastRequest": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Canonical identifier of the model to use for forecasting",
+            "examples": [
+              "LightGBM__regression_l1_fold5_CAUSAL_MATURE"
+            ]
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version",
+            "description": "Optional explicit version of the model. If omitted, latest registered version is resolved."
+          },
+          "sku_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5000,
+            "minItems": 1,
+            "title": "Sku Ids",
+            "description": "List of target SKU identifiers. Must be non-empty and contain unique valid SKUs.",
+            "examples": [
+              [
+                "10002",
+                "10120",
+                "10125"
+              ]
+            ]
+          },
+          "forecast_origin": {
+            "type": "string",
+            "title": "Forecast Origin",
+            "description": "Forecast origin cutoff date (inclusive of past data up to this Sunday) in YYYY-MM-DD format.",
+            "examples": [
+              "2011-10-09"
+            ]
+          },
+          "horizon_weeks": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Horizon Weeks",
+            "description": "Number of weekly steps to forecast ahead (1 to 4 authorized).",
+            "default": 1,
+            "examples": [
+              1
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "sku_ids",
+          "forecast_origin"
+        ],
+        "title": "ForecastRequest",
+        "description": "Request contract for initiating SKU-week demand forecasts.\nEnforces strict input validation to prevent invalid queries."
+      },
+      "ForecastResponse": {
+        "properties": {
+          "forecast_run_id": {
+            "type": "string",
+            "title": "Forecast Run Id",
+            "description": "Unique generated UUID for this forecast execution",
+            "examples": [
+              "run_20261020_001"
+            ]
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Model identifier used for inference"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Resolved model artifact version"
+          },
+          "forecast_origin": {
+            "type": "string",
+            "title": "Forecast Origin",
+            "description": "Forecast cutoff origin (YYYY-MM-DD)"
+          },
+          "horizon_weeks": {
+            "type": "integer",
+            "title": "Horizon Weeks",
+            "description": "Number of weeks forecasted"
+          },
+          "data_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Snapshot Id",
+            "description": "Feature matrix or data partition snapshot identifier"
+          },
+          "predictions": {
+            "items": {
+              "$ref": "#/components/schemas/SKUForecastRecord"
+            },
+            "type": "array",
+            "title": "Predictions",
+            "description": "List of SKU-week forecast records"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings",
+            "description": "Operational warnings or limitations noted during run"
+          }
+        },
+        "type": "object",
+        "required": [
+          "forecast_run_id",
+          "model_id",
+          "model_version",
+          "forecast_origin",
+          "horizon_weeks",
+          "predictions"
+        ],
+        "title": "ForecastResponse",
+        "description": "Standardized response contract for future operational forecasting runs.\n(In Workstream 1 & 2, this schema serves as the frozen specification)."
+      },
+      "ForecastRunDetail": {
+        "properties": {
+          "forecast_run_id": {
+            "type": "string",
+            "title": "Forecast Run Id",
+            "description": "Unique UUID of the forecast run"
+          },
+          "created_at_utc": {
+            "type": "string",
+            "title": "Created At Utc",
+            "description": "UTC ISO timestamp of run creation"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ForecastRunStatus",
+            "description": "Execution status: RUNNING, SUCCEEDED, or FAILED"
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Model ID executed"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Model version"
+          },
+          "forecast_origin": {
+            "type": "string",
+            "title": "Forecast Origin",
+            "description": "Cutoff date (YYYY-MM-DD)"
+          },
+          "horizon_weeks": {
+            "type": "integer",
+            "title": "Horizon Weeks",
+            "description": "Number of weeks forecasted"
+          },
+          "requested_sku_count": {
+            "type": "integer",
+            "title": "Requested Sku Count",
+            "description": "Number of unique SKUs requested"
+          },
+          "prediction_count": {
+            "type": "integer",
+            "title": "Prediction Count",
+            "description": "Total persisted prediction records"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "Authenticated user ID who initiated the execution"
+          },
+          "source_dataset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Dataset Id",
+            "description": "Source dataset provenance identifier"
+          },
+          "data_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Snapshot Id",
+            "description": "Snapshot/manifest hash"
+          },
+          "training_cutoff": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Training Cutoff",
+            "description": "Temporal train cutoff boundary"
+          },
+          "forecast_strategy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forecast Strategy",
+            "description": "Inference strategy (e.g. direct, autoregressive)"
+          },
+          "request_metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Metadata",
+            "description": "Serialized request options"
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Code",
+            "description": "Machine-readable failure code if run failed"
+          },
+          "failure_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Message",
+            "description": "Clean failure message if run failed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "forecast_run_id",
+          "created_at_utc",
+          "status",
+          "model_id",
+          "model_version",
+          "forecast_origin",
+          "horizon_weeks",
+          "requested_sku_count",
+          "prediction_count"
+        ],
+        "title": "ForecastRunDetail",
+        "description": "Exhaustive metadata and parameters of an executed forecast run."
+      },
+      "ForecastRunListResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total count matching query filters"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "Current page number (1-indexed)"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size",
+            "description": "Page size limit"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastRunSummary"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of forecast run summary objects"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "page_size",
+          "items"
+        ],
+        "title": "ForecastRunListResponse",
+        "description": "Paginated list of forecast run summaries."
+      },
+      "ForecastRunStatus": {
+        "type": "string",
+        "enum": [
+          "RUNNING",
+          "SUCCEEDED",
+          "FAILED"
+        ],
+        "title": "ForecastRunStatus"
+      },
+      "ForecastRunSummary": {
+        "properties": {
+          "forecast_run_id": {
+            "type": "string",
+            "title": "Forecast Run Id",
+            "description": "Unique UUID of the forecast run"
+          },
+          "created_at_utc": {
+            "type": "string",
+            "title": "Created At Utc",
+            "description": "UTC ISO timestamp of run creation"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ForecastRunStatus",
+            "description": "Execution status: RUNNING, SUCCEEDED, or FAILED"
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Model ID executed"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Model version"
+          },
+          "forecast_origin": {
+            "type": "string",
+            "title": "Forecast Origin",
+            "description": "Cutoff date (YYYY-MM-DD)"
+          },
+          "horizon_weeks": {
+            "type": "integer",
+            "title": "Horizon Weeks",
+            "description": "Number of weeks forecasted"
+          },
+          "requested_sku_count": {
+            "type": "integer",
+            "title": "Requested Sku Count",
+            "description": "Number of unique SKUs requested"
+          },
+          "prediction_count": {
+            "type": "integer",
+            "title": "Prediction Count",
+            "description": "Total persisted prediction records"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "Authenticated user ID who initiated the execution"
+          }
+        },
+        "type": "object",
+        "required": [
+          "forecast_run_id",
+          "created_at_utc",
+          "status",
+          "model_id",
+          "model_version",
+          "forecast_origin",
+          "horizon_weeks",
+          "requested_sku_count",
+          "prediction_count"
+        ],
+        "title": "ForecastRunSummary",
+        "description": "High-level summary of an executed forecast run."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthLiveResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Liveness status indicator",
+            "default": "live"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "UTC timestamp of the probe response"
+          }
+        },
+        "type": "object",
+        "title": "HealthLiveResponse",
+        "description": "Liveness probe response indicating the API process is alive and responsive."
+      },
+      "HealthReadyResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Overall readiness: 'ready' or 'not_ready'",
+            "examples": [
+              "not_ready"
+            ]
+          },
+          "components": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Components",
+            "description": "Granular readiness boolean flags for critical backend components",
+            "examples": [
+              {
+                "api": true,
+                "configuration": true,
+                "forecasting_backend": false,
+                "registry_metadata": true,
+                "serving_model_ready": false
+              }
+            ]
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details",
+            "description": "Contextual diagnostic notes explaining component states"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "UTC timestamp of the probe response"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "components"
+        ],
+        "title": "HealthReadyResponse",
+        "description": "Readiness probe response indicating individual backend component operational readiness.\nDifferentiates between API/Registry availability and Serving Model / Inference readiness."
+      },
+      "LoginRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 2,
+            "title": "Username",
+            "description": "Account username"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "title": "Password",
+            "description": "Account plaintext password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token",
+            "description": "HS256 signed JWT bearer token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "description": "Token authorization type",
+            "default": "bearer"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "title": "Expires In Seconds",
+            "description": "Token lifespan in seconds"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserProfileResponse",
+            "description": "Authenticated user profile"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in_seconds",
+          "user"
+        ],
+        "title": "LoginResponse"
+      },
+      "LogoutResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Logout execution status",
+            "default": "SUCCEEDED"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Human-readable message",
+            "default": "Session successfully terminated and token revoked"
+          }
+        },
+        "type": "object",
+        "title": "LogoutResponse"
+      },
+      "ModelDetailResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Unique canonical identifier for the model artifact"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "Standardized name of the model"
+          },
+          "entry_type": {
+            "$ref": "#/components/schemas/RegistryEntryType",
+            "description": "Distinguishes trainable ML model artifacts with weights from statistical baseline reference benchmarks",
+            "default": "MODEL_ARTIFACT"
+          },
+          "has_weights": {
+            "type": "boolean",
+            "title": "Has Weights",
+            "description": "Whether physical serialized weights exist in the managed model store",
+            "default": true
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Version tag of the model artifact contract"
+          },
+          "fold_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fold Id",
+            "description": "Temporal CV fold index (1-5)"
+          },
+          "cohort": {
+            "type": "string",
+            "title": "Cohort",
+            "description": "Evaluated cohort: CAUSAL_MATURE or LATE_MATURING"
+          },
+          "scoring_population": {
+            "type": "string",
+            "title": "Scoring Population",
+            "description": "PRIMARY_BENCHMARK or SECONDARY_ANALYSIS"
+          },
+          "framework": {
+            "type": "string",
+            "title": "Framework",
+            "description": "Machine learning framework (lightgbm, catboost, baseline)"
+          },
+          "algorithm_family": {
+            "type": "string",
+            "title": "Algorithm Family",
+            "description": "Model family (tree_ensemble, heuristic_baseline)"
+          },
+          "objective": {
+            "type": "string",
+            "title": "Objective",
+            "description": "Training loss objective function"
+          },
+          "eval_metric": {
+            "type": "string",
+            "title": "Eval Metric",
+            "description": "Primary validation metric used for early stopping"
+          },
+          "artifact_role": {
+            "$ref": "#/components/schemas/ArtifactRole",
+            "description": "Lifecycle governance role of the artifact"
+          },
+          "serving_status": {
+            "$ref": "#/components/schemas/ServingStatus",
+            "description": "Production serving readiness status"
+          },
+          "readiness_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Readiness Reasons",
+            "description": "Audited reasons explaining why the model is or is not serving-ready"
+          },
+          "feature_schema_version": {
+            "type": "string",
+            "title": "Feature Schema Version",
+            "description": "Feature matrix schema version requirement"
+          },
+          "predictor_allowlist_version": {
+            "type": "string",
+            "title": "Predictor Allowlist Version",
+            "description": "Version of the 71-feature predictor allowlist"
+          },
+          "predictor_allowlist_hash": {
+            "type": "string",
+            "title": "Predictor Allowlist Hash",
+            "description": "Canonical SHA-256 hash of the predictor allowlist"
+          },
+          "training_cutoff": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Training Cutoff",
+            "description": "Temporal train cutoff boundary (ISO date)"
+          },
+          "inner_stop_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inner Stop Start",
+            "description": "Inner early stopping validation start date"
+          },
+          "inner_stop_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inner Stop End",
+            "description": "Inner early stopping validation end date"
+          },
+          "inner_train_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inner Train Rows",
+            "description": "Row count in inner training partition"
+          },
+          "inner_val_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inner Val Rows",
+            "description": "Row count in inner validation partition"
+          },
+          "outer_train_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outer Train Rows",
+            "description": "Row count in outer training partition"
+          },
+          "outer_val_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outer Val Rows",
+            "description": "Row count in outer validation partition"
+          },
+          "best_iteration": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Iteration",
+            "description": "Number of fitted boosting rounds"
+          },
+          "train_time_sec": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Train Time Sec",
+            "description": "Training execution wall time in seconds"
+          },
+          "supported_horizons": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Supported Horizons",
+            "description": "Verified forecast horizon steps"
+          },
+          "artifact_checksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artifact Checksum",
+            "description": "SHA-256 checksum of the persisted weights file"
+          },
+          "registered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered At",
+            "description": "UTC registration timestamp in the registry"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "model_name",
+          "model_version",
+          "cohort",
+          "scoring_population",
+          "framework",
+          "algorithm_family",
+          "objective",
+          "eval_metric",
+          "artifact_role",
+          "serving_status",
+          "readiness_reasons",
+          "feature_schema_version",
+          "predictor_allowlist_version",
+          "predictor_allowlist_hash"
+        ],
+        "title": "ModelDetailResponse",
+        "description": "Exhaustive governance metadata for a model in the registry (excluding internal server paths)."
+      },
+      "ModelListResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of matching model records"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ModelSummaryResponse"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of model summary objects"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "items"
+        ],
+        "title": "ModelListResponse",
+        "description": "Paginated or filtered list of models registered in the service."
+      },
+      "ModelSummaryResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "Unique canonical identifier for the model artifact"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "Standardized name of the model"
+          },
+          "entry_type": {
+            "$ref": "#/components/schemas/RegistryEntryType",
+            "description": "Distinguishes trainable ML model artifacts with weights from statistical baseline reference benchmarks",
+            "default": "MODEL_ARTIFACT"
+          },
+          "has_weights": {
+            "type": "boolean",
+            "title": "Has Weights",
+            "description": "Whether physical serialized weights exist in the managed model store",
+            "default": true
+          },
+          "fold_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fold Id",
+            "description": "Temporal CV fold index (1-5), or null if global"
+          },
+          "cohort": {
+            "type": "string",
+            "title": "Cohort",
+            "description": "Target customer/SKU cohort: CAUSAL_MATURE or LATE_MATURING"
+          },
+          "framework": {
+            "type": "string",
+            "title": "Framework",
+            "description": "Underlying ML framework (e.g. lightgbm, catboost, baseline)"
+          },
+          "objective": {
+            "type": "string",
+            "title": "Objective",
+            "description": "Training loss objective function"
+          },
+          "artifact_role": {
+            "$ref": "#/components/schemas/ArtifactRole",
+            "description": "Lifecycle governance role of the artifact"
+          },
+          "serving_status": {
+            "$ref": "#/components/schemas/ServingStatus",
+            "description": "Production serving readiness status"
+          },
+          "training_cutoff": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Training Cutoff",
+            "description": "ISO date of the temporal training cutoff"
+          },
+          "best_iteration": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Iteration",
+            "description": "Optimal boosting tree iteration if applicable"
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version",
+            "description": "Model version string",
+            "default": "1.0.0"
+          },
+          "algorithm_family": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Algorithm Family",
+            "description": "Algorithm family"
+          },
+          "supported_horizons": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Supported Horizons",
+            "description": "Verified forecast horizons"
+          },
+          "artifact_checksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artifact Checksum",
+            "description": "SHA-256 artifact checksum"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "model_name",
+          "cohort",
+          "framework",
+          "objective",
+          "artifact_role",
+          "serving_status"
+        ],
+        "title": "ModelSummaryResponse",
+        "description": "Concise representation of a model in the registry for list queries."
+      },
+      "RecentRunsSummary": {
+        "properties": {
+          "total_runs_recorded": {
+            "type": "integer",
+            "title": "Total Runs Recorded",
+            "description": "Total forecast runs stored in persistence"
+          },
+          "latest_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Run Id",
+            "description": "Identifier of the most recent execution"
+          },
+          "latest_run_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Run Status",
+            "description": "Status of the most recent execution"
+          },
+          "latest_run_created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Run Created At",
+            "description": "Timestamp of the most recent execution"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_runs_recorded"
+        ],
+        "title": "RecentRunsSummary",
+        "description": "Recent forecast execution activity."
+      },
+      "RegistryEntryType": {
+        "type": "string",
+        "enum": [
+          "MODEL_ARTIFACT",
+          "BASELINE_BENCHMARK"
+        ],
+        "title": "RegistryEntryType"
+      },
+      "ReplenishmentSimulationRequest": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Target SKU identifier",
+            "examples": [
+              "10002"
+            ]
+          },
+          "forecast_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forecast Run Id",
+            "description": "Optional persisted forecast run identifier to extract demand forecast over protection period",
+            "examples": [
+              "run_20261021_061405_663b5aa8"
+            ]
+          },
+          "manual_forecast_demand": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manual Forecast Demand",
+            "description": "Direct demand forecast units over protection period if forecast_run_id is omitted",
+            "examples": [
+              45.0
+            ]
+          },
+          "stock_on_hand": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Stock On Hand",
+            "description": "Current usable inventory units physically on hand",
+            "examples": [
+              20.0
+            ]
+          },
+          "incoming_stock": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Incoming Stock",
+            "description": "Confirmed open purchase order shipments arriving within lead time",
+            "default": 0.0,
+            "examples": [
+              10.0
+            ]
+          },
+          "lead_time_weeks": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 1.0,
+            "title": "Lead Time Weeks",
+            "description": "Supplier lead time in complete weekly increments",
+            "default": 2,
+            "examples": [
+              2
+            ]
+          },
+          "review_period_weeks": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Review Period Weeks",
+            "description": "Periodic review cycle interval in weeks (R)",
+            "default": 1,
+            "examples": [
+              1
+            ]
+          },
+          "safety_stock_units": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Safety Stock Units",
+            "description": "User-specified safety stock buffer units. WARNING: Safety stock sizing has NOT been mathematically optimized or validated.",
+            "default": 0.0,
+            "examples": [
+              15.0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "stock_on_hand"
+        ],
+        "title": "ReplenishmentSimulationRequest",
+        "description": "Input contract for simulating a single-echelon periodic-review replenishment order.\nSafety stock MUST be user-specified; no automated claims of optimality are made."
+      },
+      "ReplenishmentSimulationResponse": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Target product identifier"
+          },
+          "lead_time_weeks": {
+            "type": "integer",
+            "title": "Lead Time Weeks",
+            "description": "Replenishment lead time in weeks (L)"
+          },
+          "review_period_weeks": {
+            "type": "integer",
+            "title": "Review Period Weeks",
+            "description": "Review period in weeks (R)"
+          },
+          "protection_period_weeks": {
+            "type": "integer",
+            "title": "Protection Period Weeks",
+            "description": "Total protection interval = L + R"
+          },
+          "forecast_demand_over_protection_period": {
+            "type": "number",
+            "title": "Forecast Demand Over Protection Period",
+            "description": "Expected demand units over the protection period"
+          },
+          "safety_stock_units": {
+            "type": "number",
+            "title": "Safety Stock Units",
+            "description": "User-supplied safety stock buffer units"
+          },
+          "gross_requirement_units": {
+            "type": "number",
+            "title": "Gross Requirement Units",
+            "description": "Total requirement = Forecast Demand + Safety Stock"
+          },
+          "stock_on_hand_units": {
+            "type": "number",
+            "title": "Stock On Hand Units",
+            "description": "Inventory on hand"
+          },
+          "incoming_stock_units": {
+            "type": "number",
+            "title": "Incoming Stock Units",
+            "description": "Inventory in transit / on order"
+          },
+          "net_requirement_units": {
+            "type": "number",
+            "title": "Net Requirement Units",
+            "description": "Gross Requirement - On Hand - Incoming"
+          },
+          "replenishment_order_units": {
+            "type": "number",
+            "title": "Replenishment Order Units",
+            "description": "Recommended replenishment order quantity = max(0, Net Requirement)"
+          },
+          "simulation_status": {
+            "type": "string",
+            "title": "Simulation Status",
+            "description": "Governance classification tag",
+            "default": "SIMULATION_BASED_ON_USER_ASSUMPTIONS"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer",
+            "description": "Mandatory supply-chain governance disclaimer",
+            "default": "This calculation is a deterministic simulation based strictly on user assumptions and point forecast values. Safety stock is NOT mathematically proven or guaranteed to prevent stockouts under stochastic demand. Do not interpret this recommendation as an optimal inventory policy."
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "lead_time_weeks",
+          "review_period_weeks",
+          "protection_period_weeks",
+          "forecast_demand_over_protection_period",
+          "safety_stock_units",
+          "gross_requirement_units",
+          "stock_on_hand_units",
+          "incoming_stock_units",
+          "net_requirement_units",
+          "replenishment_order_units"
+        ],
+        "title": "ReplenishmentSimulationResponse",
+        "description": "Simulation output for replenishment order calculation.\nFormula: recommended_order_units = max(0, forecast_demand + safety_stock - on_hand - incoming)"
+      },
+      "SKUDetailResponse": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Unique product SKU identifier",
+            "examples": [
+              "10002"
+            ]
+          },
+          "cohort_tier": {
+            "type": "string",
+            "title": "Cohort Tier",
+            "description": "Target cohort tier: CAUSAL_MATURE or LATE_MATURING"
+          },
+          "abc_demand_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abc Demand Class",
+            "description": "ABC demand volume tier"
+          },
+          "abc_value_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abc Value Class",
+            "description": "ABC gross revenue value tier"
+          },
+          "xyz_variability_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xyz Variability Class",
+            "description": "XYZ variability classification"
+          },
+          "sbc_regime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sbc Regime",
+            "description": "Syntetos-Boylan-Croston demand pattern regime"
+          },
+          "adi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adi",
+            "description": "Average Demand Interval (inter-arrival time in weeks)"
+          },
+          "cv2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cv2",
+            "description": "Squared coefficient of variation of positive demand sizes"
+          },
+          "first_observed_week": {
+            "type": "string",
+            "title": "First Observed Week",
+            "description": "Earliest weekly boundary observed in panel",
+            "examples": [
+              "2009-12-07"
+            ]
+          },
+          "last_observed_week": {
+            "type": "string",
+            "title": "Last Observed Week",
+            "description": "Latest weekly boundary observed in development pool",
+            "examples": [
+              "2011-10-03"
+            ]
+          },
+          "total_weeks_in_catalog": {
+            "type": "integer",
+            "title": "Total Weeks In Catalog",
+            "description": "Total calendar weeks in development pool",
+            "examples": [
+              96
+            ]
+          },
+          "total_demand_units": {
+            "type": "number",
+            "title": "Total Demand Units",
+            "description": "Total demand units in development pool"
+          },
+          "avg_weekly_demand": {
+            "type": "number",
+            "title": "Avg Weekly Demand",
+            "description": "Average weekly demand units"
+          },
+          "zero_demand_weeks": {
+            "type": "integer",
+            "title": "Zero Demand Weeks",
+            "description": "Count of weeks with zero demand"
+          },
+          "zero_rate": {
+            "type": "number",
+            "title": "Zero Rate",
+            "description": "Fraction of zero-demand weeks"
+          },
+          "latest_unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Unit Price",
+            "description": "Latest observed unit sales price"
+          },
+          "serving_eligible": {
+            "type": "boolean",
+            "title": "Serving Eligible",
+            "description": "Whether SKU belongs to qualified forecasting universe",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "cohort_tier",
+          "first_observed_week",
+          "last_observed_week",
+          "total_weeks_in_catalog",
+          "total_demand_units",
+          "avg_weekly_demand",
+          "zero_demand_weeks",
+          "zero_rate"
+        ],
+        "title": "SKUDetailResponse",
+        "description": "Exhaustive metadata and statistical summary for a single SKU."
+      },
+      "SKUForecastRecord": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Target SKU identifier",
+            "examples": [
+              "10002"
+            ]
+          },
+          "target_week": {
+            "type": "string",
+            "title": "Target Week",
+            "description": "Target weekly Monday boundary (YYYY-MM-DD)",
+            "examples": [
+              "2011-10-10"
+            ]
+          },
+          "horizon_step": {
+            "type": "integer",
+            "title": "Horizon Step",
+            "description": "Horizon step (1-indexed)",
+            "examples": [
+              1
+            ]
+          },
+          "prediction": {
+            "type": "number",
+            "title": "Prediction",
+            "description": "Predicted demand units (non-negative)",
+            "examples": [
+              12.5
+            ]
+          },
+          "prediction_status": {
+            "type": "string",
+            "title": "Prediction Status",
+            "description": "Prediction status tag (e.g. INFERRED, HEURISTIC, FALLBACK)",
+            "examples": [
+              "INFERRED"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "target_week",
+          "horizon_step",
+          "prediction",
+          "prediction_status"
+        ],
+        "title": "SKUForecastRecord",
+        "description": "Prediction item for a single SKU at a specific horizon step."
+      },
+      "SKUHistoryPoint": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "title": "Week Start",
+            "description": "Monday weekly start date (YYYY-MM-DD)",
+            "examples": [
+              "2011-01-03"
+            ]
+          },
+          "demand": {
+            "type": "number",
+            "title": "Demand",
+            "description": "Weekly demand quantity in units",
+            "examples": [
+              24.0
+            ]
+          },
+          "avg_unit_price": {
+            "type": "number",
+            "title": "Avg Unit Price",
+            "description": "Average selling price per unit in GBP",
+            "examples": [
+              1.25
+            ]
+          },
+          "transaction_count": {
+            "type": "integer",
+            "title": "Transaction Count",
+            "description": "Total transactions containing this SKU",
+            "examples": [
+              8
+            ]
+          },
+          "unique_customer_count": {
+            "type": "integer",
+            "title": "Unique Customer Count",
+            "description": "Number of distinct customers purchasing this SKU",
+            "examples": [
+              5
+            ]
+          },
+          "zero_demand_flag": {
+            "type": "integer",
+            "title": "Zero Demand Flag",
+            "description": "1 if demand is zero, 0 if positive",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "demand",
+          "avg_unit_price",
+          "transaction_count",
+          "unique_customer_count",
+          "zero_demand_flag"
+        ],
+        "title": "SKUHistoryPoint",
+        "description": "Single weekly historical observation for a SKU."
+      },
+      "SKUHistoryResponse": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Target SKU identifier",
+            "examples": [
+              "10002"
+            ]
+          },
+          "cohort_tier": {
+            "type": "string",
+            "title": "Cohort Tier",
+            "description": "Cohort tier of the SKU",
+            "examples": [
+              "CAUSAL_MATURE"
+            ]
+          },
+          "total_weeks": {
+            "type": "integer",
+            "title": "Total Weeks",
+            "description": "Number of weekly data points returned",
+            "examples": [
+              96
+            ]
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/SKUHistoryPoint"
+            },
+            "type": "array",
+            "title": "History",
+            "description": "Chronological time series observations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "cohort_tier",
+          "total_weeks",
+          "history"
+        ],
+        "title": "SKUHistoryResponse",
+        "description": "Chronological demand history for a single SKU."
+      },
+      "SKUListResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total matching SKUs across catalog",
+            "examples": [
+              2785
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "Current page number (1-indexed)",
+            "examples": [
+              1
+            ]
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size",
+            "description": "Page size limit",
+            "examples": [
+              50
+            ]
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SKUSummary"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "Page items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "page_size",
+          "items"
+        ],
+        "title": "SKUListResponse",
+        "description": "Paginated response for SKU catalog search and filtering."
+      },
+      "SKUSummary": {
+        "properties": {
+          "sku_id": {
+            "type": "string",
+            "title": "Sku Id",
+            "description": "Unique product SKU identifier",
+            "examples": [
+              "10002"
+            ]
+          },
+          "cohort_tier": {
+            "type": "string",
+            "title": "Cohort Tier",
+            "description": "Target cohort: CAUSAL_MATURE or LATE_MATURING",
+            "examples": [
+              "CAUSAL_MATURE"
+            ]
+          },
+          "abc_demand_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abc Demand Class",
+            "description": "ABC demand volume tier (A, B, or C)",
+            "examples": [
+              "A"
+            ]
+          },
+          "abc_value_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abc Value Class",
+            "description": "ABC gross revenue tier (A, B, or C)",
+            "examples": [
+              "A"
+            ]
+          },
+          "xyz_variability_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xyz Variability Class",
+            "description": "XYZ demand variability tier (X, Y, or Z)",
+            "examples": [
+              "Y"
+            ]
+          },
+          "sbc_regime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sbc Regime",
+            "description": "Syntetos-Boylan-Croston regime",
+            "examples": [
+              "Smooth"
+            ]
+          },
+          "total_demand_units": {
+            "type": "number",
+            "title": "Total Demand Units",
+            "description": "Cumulative historical demand units across development pool",
+            "examples": [
+              1250.0
+            ]
+          },
+          "avg_weekly_demand": {
+            "type": "number",
+            "title": "Avg Weekly Demand",
+            "description": "Average weekly demand units",
+            "examples": [
+              13.02
+            ]
+          },
+          "zero_weeks_count": {
+            "type": "integer",
+            "title": "Zero Weeks Count",
+            "description": "Number of weeks with zero realized demand",
+            "examples": [
+              15
+            ]
+          },
+          "active_weeks_count": {
+            "type": "integer",
+            "title": "Active Weeks Count",
+            "description": "Number of weeks with positive transactions",
+            "examples": [
+              81
+            ]
+          },
+          "intermittency_ratio": {
+            "type": "number",
+            "title": "Intermittency Ratio",
+            "description": "Proportion of zero-demand weeks in panel",
+            "examples": [
+              0.156
+            ]
+          },
+          "last_observed_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Observed Price",
+            "description": "Latest unit price observed at origin",
+            "examples": [
+              1.25
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "sku_id",
+          "cohort_tier",
+          "total_demand_units",
+          "avg_weekly_demand",
+          "zero_weeks_count",
+          "active_weeks_count",
+          "intermittency_ratio"
+        ],
+        "title": "SKUSummary",
+        "description": "Summary item for paginated SKU catalog listings."
+      },
+      "ServingStatus": {
+        "type": "string",
+        "enum": [
+          "NOT_READY",
+          "SERVING_READY",
+          "DEPRECATED"
+        ],
+        "title": "ServingStatus"
+      },
+      "TimelineSummary": {
+        "properties": {
+          "dataset_start_week": {
+            "type": "string",
+            "title": "Dataset Start Week",
+            "description": "First complete calendar Monday of development pool",
+            "default": "2009-12-07"
+          },
+          "training_cutoff": {
+            "type": "string",
+            "title": "Training Cutoff",
+            "description": "Forecast origin and training cutoff week",
+            "default": "2011-10-03"
+          },
+          "development_weeks_count": {
+            "type": "integer",
+            "title": "Development Weeks Count",
+            "description": "Number of complete development weeks",
+            "default": 96
+          },
+          "holdout_start_week": {
+            "type": "string",
+            "title": "Holdout Start Week",
+            "description": "Start date of 8-week final holdout evaluation window",
+            "default": "2011-10-10"
+          },
+          "holdout_end_week": {
+            "type": "string",
+            "title": "Holdout End Week",
+            "description": "End date of 8-week final holdout evaluation window",
+            "default": "2011-11-28"
+          },
+          "holdout_weeks_count": {
+            "type": "integer",
+            "title": "Holdout Weeks Count",
+            "description": "Number of complete holdout weeks",
+            "default": 8
+          },
+          "excluded_boundary_week": {
+            "type": "string",
+            "title": "Excluded Boundary Week",
+            "description": "Quarantined partial boundary week",
+            "default": "2011-12-05"
+          }
+        },
+        "type": "object",
+        "title": "TimelineSummary",
+        "description": "Historical timeline and boundary specifications."
+      },
+      "UserProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "Unique user identifier"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "Username"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name",
+            "description": "User full display name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Assigned RBAC role: admin, analyst, planner, viewer"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "description": "Account active status",
+            "default": true
+          },
+          "created_at_utc": {
+            "type": "string",
+            "title": "Created At Utc",
+            "description": "Timestamp of account creation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "username",
+          "role",
+          "created_at_utc"
+        ],
+        "title": "UserProfileResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

@@ -1,0 +1,638 @@
+{
+  "version": "v1.2",
+  "created_at": "2026-10-20T15:18:52.305699+00:00",
+  "governing_contract": "project_docs/feature_contract.md",
+  "feature_manifest_reference": "data/processed/feature_manifest_v1_2.json",
+  "allowlist_sha256": "71999741d31b1b1b8501248c16b381d1109c3313254ae4f677584f4fffb3fb1a",
+  "n_allowed_predictors": 71,
+  "allowed_predictors": [
+    {
+      "feature_name": "demand_lag_1",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_2",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_3",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_4",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_8",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_12",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_13",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_lag_26",
+      "feature_family": "demand_lags",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "has_lag_1",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "has_lag_4",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "has_lag_13",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "has_lag_52",
+      "feature_family": "history_sufficiency_indicators",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_mean_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_min_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_max_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_std_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_zero_ratio_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_positive_rate_4",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_mean_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_min_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_max_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_std_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_zero_ratio_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_positive_rate_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_mean_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_min_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_max_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_std_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_zero_ratio_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_positive_rate_12",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_mean_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_min_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_max_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_std_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_zero_ratio_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_positive_rate_13",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_mean_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_min_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_max_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_std_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_zero_ratio_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_positive_rate_26",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "ewma_demand_span_4",
+      "feature_family": "exponential_smoothing",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "ewma_demand_span_12",
+      "feature_family": "exponential_smoothing",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_diff_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_diff_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_growth_ratio_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "demand_growth_ratio_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "is_zero_denominator_1_2",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "is_zero_denominator_1_4",
+      "feature_family": "demand_dynamics_momentum",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "rolling_cv_8",
+      "feature_family": "rolling_demand_statistics",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "txn_count_lag_1",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "txn_count_rolling_mean_4",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "unique_customer_count_lag_1",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "weeks_since_last_sale",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "weeks_since_first_observed",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "price_lag_1",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "price_rolling_mean_4",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "last_observed_price",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "weeks_since_last_observed_price",
+      "feature_family": "activity_features",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "has_observed_past_price",
+      "feature_family": "price_signals",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_week_of_year",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_month",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_quarter",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_week_sin",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_week_cos",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_month_sin",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_month_cos",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_is_december",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_is_q4",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    },
+    {
+      "feature_name": "target_weeks_to_christmas",
+      "feature_family": "calendar_known_future",
+      "role": "primary_candidate",
+      "missing_value_policy": "PRESERVE_NAN_TREE_NATIVE",
+      "validity_constraints": "FINITE_NUMERICAL"
+    }
+  ],
+  "allowed_predictor_names": [
+    "demand_diff_1_2",
+    "demand_diff_1_4",
+    "demand_growth_ratio_1_2",
+    "demand_growth_ratio_1_4",
+    "demand_lag_1",
+    "demand_lag_12",
+    "demand_lag_13",
+    "demand_lag_2",
+    "demand_lag_26",
+    "demand_lag_3",
+    "demand_lag_4",
+    "demand_lag_8",
+    "ewma_demand_span_12",
+    "ewma_demand_span_4",
+    "has_lag_1",
+    "has_lag_13",
+    "has_lag_4",
+    "has_lag_52",
+    "has_observed_past_price",
+    "is_zero_denominator_1_2",
+    "is_zero_denominator_1_4",
+    "last_observed_price",
+    "price_lag_1",
+    "price_rolling_mean_4",
+    "rolling_cv_8",
+    "rolling_max_12",
+    "rolling_max_13",
+    "rolling_max_26",
+    "rolling_max_4",
+    "rolling_max_8",
+    "rolling_mean_12",
+    "rolling_mean_13",
+    "rolling_mean_26",
+    "rolling_mean_4",
+    "rolling_mean_8",
+    "rolling_min_12",
+    "rolling_min_13",
+    "rolling_min_26",
+    "rolling_min_4",
+    "rolling_min_8",
+    "rolling_positive_rate_12",
+    "rolling_positive_rate_13",
+    "rolling_positive_rate_26",
+    "rolling_positive_rate_4",
+    "rolling_positive_rate_8",
+    "rolling_std_12",
+    "rolling_std_13",
+    "rolling_std_26",
+    "rolling_std_4",
+    "rolling_std_8",
+    "rolling_zero_ratio_12",
+    "rolling_zero_ratio_13",
+    "rolling_zero_ratio_26",
+    "rolling_zero_ratio_4",
+    "rolling_zero_ratio_8",
+    "target_is_december",
+    "target_is_q4",
+    "target_month",
+    "target_month_cos",
+    "target_month_sin",
+    "target_quarter",
+    "target_week_cos",
+    "target_week_of_year",
+    "target_week_sin",
+    "target_weeks_to_christmas",
+    "txn_count_lag_1",
+    "txn_count_rolling_mean_4",
+    "unique_customer_count_lag_1",
+    "weeks_since_first_observed",
+    "weeks_since_last_observed_price",
+    "weeks_since_last_sale"
+  ],
+  "n_excluded_columns": 11,
+  "excluded_columns": {
+    "sku_id": {
+      "role": "metadata_key",
+      "feature_family": "entity_coordinates",
+      "exclusion_reason": "Temporal/entity coordinate"
+    },
+    "cohort_tier": {
+      "role": "metadata_key",
+      "feature_family": "entity_coordinates",
+      "exclusion_reason": "Temporal/entity coordinate"
+    },
+    "period_role": {
+      "role": "metadata_key",
+      "feature_family": "entity_coordinates",
+      "exclusion_reason": "Temporal/entity coordinate"
+    },
+    "target_week": {
+      "role": "metadata_key",
+      "feature_family": "entity_coordinates",
+      "exclusion_reason": "Temporal/entity coordinate"
+    },
+    "feature_origin_week": {
+      "role": "metadata_key",
+      "feature_family": "entity_coordinates",
+      "exclusion_reason": "Temporal/entity coordinate"
+    },
+    "y_target": {
+      "role": "label",
+      "feature_family": "target_label",
+      "exclusion_reason": "Target label"
+    },
+    "demand_lag_52": {
+      "role": "exploratory_only",
+      "feature_family": "demand_lags",
+      "exclusion_reason": "Exploratory candidate with high missingness (<50% coverage)"
+    },
+    "abc_demand_class": {
+      "role": "metadata_only",
+      "feature_family": "descriptive_descriptors",
+      "exclusion_reason": "Static descriptive EDA segment barred from training"
+    },
+    "abc_value_class_panel": {
+      "role": "metadata_only",
+      "feature_family": "descriptive_descriptors",
+      "exclusion_reason": "Static descriptive EDA segment barred from training"
+    },
+    "xyz_variability_class": {
+      "role": "metadata_only",
+      "feature_family": "descriptive_descriptors",
+      "exclusion_reason": "Static descriptive EDA segment barred from training"
+    },
+    "sbc_regime": {
+      "role": "metadata_only",
+      "feature_family": "descriptive_descriptors",
+      "exclusion_reason": "Static descriptive EDA segment barred from training"
+    }
+  }
+}

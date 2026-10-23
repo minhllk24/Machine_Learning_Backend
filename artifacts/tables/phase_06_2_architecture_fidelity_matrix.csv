@@ -1,0 +1,11 @@
+component,paper_spec,phase_06_tabular,phase_06_2_tide_seq,phase_06_2_tft_seq,remediation_verdict
+Lookback Temporal Sequence,L time steps (vectorized),Single row (S=1),"L=13 time steps tensor (B, L)","L=13 time steps tensor (B, L)",FULL_FIDELITY
+Sequence Length (S),S = L + H > 1,S = 1 (collapsed),L=13 encoder + H=8 decoder,S = 21 (L=13 + H=8),FULL_FIDELITY
+Temporal Attention,Interpretable Self-Attention over S timesteps,Degenerate Attention (1x1 scalar = 1.0),N/A (TiDE uses dense MLP encoder),Causal Multi-Head Attention (21x21),FULL_FIDELITY
+Variable Selection Network,Per-timestep dynamic feature selection,Static across 4 domain groups,Linear projection per timestep,Temporal VSN across S=21 timesteps,FULL_FIDELITY
+Linear Skip Connection,Linear map from y_{1:L} to future horizons,"Linear(1, 1) from lag 1",Linear(L=13 -> H=8) global skip,Recurrent LSTM gating + GRN skip,FULL_FIDELITY
+Multi-Horizon Output,"Direct multi-step vector (B, H)","Single step point forecast (B, 1)","Direct multi-horizon vector (B, 8)","Direct multi-horizon vector (B, 8)",FULL_FIDELITY
+Future Covariate Handling,Deterministic calendar features known in advance,Merged in tabular row,"Dedicated future projection (B, H, 10)",Known future channel in VSN,FULL_FIDELITY
+Scaler Isolation,Fitted strictly on training history,Inner train / outer train isolated,Fitted strictly on training slice,Fitted strictly on training slice,FULL_FIDELITY
+Early Stopping Policy,Inner chronological validation,Inner 8-week block,Inner 8-week multi-horizon block,Inner 8-week multi-horizon block,FULL_FIDELITY
+Future Actual Leakage,Zero realized demand inside horizon,One-step only,Zero actuals in future steps,Causal mask prevents future attention,FULL_FIDELITY
