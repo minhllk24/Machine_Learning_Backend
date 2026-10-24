@@ -97,6 +97,8 @@ desktop.ini
 *.swp
 *.swo
 *~
+.agent/
+.agents/
 
 # 7. Heavy Raw Data Files & Redundant Downloads
 # Exclude raw 43MB Excel and duplicate directory
