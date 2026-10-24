@@ -12,8 +12,15 @@ Implements causal temporal window extraction:
 from typing import Dict, List, Tuple, Any, Optional
 import numpy as np
 import pandas as pd
-import torch
-from torch.utils.data import Dataset, DataLoader
+try:
+    import torch
+    from torch.utils.data import Dataset, DataLoader
+except ImportError:
+    torch = None
+    class Dataset:  # type: ignore
+        pass
+    class DataLoader:  # type: ignore
+        pass
 
 
 CALENDAR_COLUMNS = [

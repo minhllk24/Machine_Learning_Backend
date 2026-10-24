@@ -102,32 +102,64 @@ def populate_sqlite_db(df_cleaned=None, panel_df=None, test_predictions=None):
     logger.info("SQLite database populated successfully.")
 
 
+_mysql_pool = None
+
+
+def get_mysql_pool():
+    """Khởi tạo và trả về MySQLConnectionPool tái sử dụng kết nối."""
+    global _mysql_pool
+    if _mysql_pool is None:
+        from mysql.connector import pooling
+        from src.core.config import settings
+        _mysql_pool = pooling.MySQLConnectionPool(
+            pool_name="retail_pool",
+            pool_size=settings.MYSQL_POOL_SIZE,
+            pool_reset_session=True,
+            host=settings.MYSQL_HOST,
+            port=settings.MYSQL_PORT,
+            user=settings.MYSQL_USER,
+            password=settings.MYSQL_PASSWORD,
+            database=settings.MYSQL_DATABASE,
+        )
+        logger.info(f"MySQL Connection Pool 'retail_pool' initialized (size={settings.MYSQL_POOL_SIZE}).")
+    return _mysql_pool
+
+
 def get_mysql_connection():
-    """Tạo kết nối tới MySQL Server dựa trên cấu hình môi trường."""
-    import os
+    """Lấy connection từ connection pool hoặc tạo kết nối trực tiếp nếu pool lỗi."""
     import mysql.connector
-    return mysql.connector.connect(
-        host=os.getenv("MYSQL_HOST", "127.0.0.1"),
-        port=int(os.getenv("MYSQL_PORT", 3306)),
-        user=os.getenv("MYSQL_USER", "root"),
-        password=os.getenv("MYSQL_PASSWORD", "123456"),
-        database=os.getenv("MYSQL_DATABASE", "online_retail_db"),
-        autocommit=False
-    )
+    from src.core.config import settings
+    try:
+        pool = get_mysql_pool()
+        return pool.get_connection()
+    except Exception as e:
+        logger.warning(f"Connection pool unavailable ({e}), falling back to direct connection.")
+        return mysql.connector.connect(
+            host=settings.MYSQL_HOST,
+            port=settings.MYSQL_PORT,
+            user=settings.MYSQL_USER,
+            password=settings.MYSQL_PASSWORD,
+            database=settings.MYSQL_DATABASE,
+            connection_timeout=3,
+            autocommit=False
+        )
 
 
 def populate_mysql_db():
-    """Nạp toàn bộ dữ liệu sạch, panel tuần và dự báo vào cơ sở dữ liệu MySQL."""
+    """Nạp toàn bộ dữ liệu sạch, panel tuần, dự báo và tồn kho vào MySQL."""
     from scripts.populate_mysql_all import (
         populate_transactions,
         populate_sku_week_demand,
         populate_forecast_predictions,
         verify_all_tables
     )
-    logger.info("Bắt đầu đồng bộ toàn bộ dữ liệu vào MySQL (online_retail_db)...")
+    from scripts.populate_inventory_decisions import populate_inventory_decisions
+    
+    logger.info("Bắt đầu đồng bộ toàn bộ 5 bảng dữ liệu vào MySQL (online_retail_db)...")
     populate_transactions()
     populate_sku_week_demand()
     populate_forecast_predictions()
+    populate_inventory_decisions()
     verify_all_tables()
 
 

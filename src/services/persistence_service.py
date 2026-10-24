@@ -269,6 +269,15 @@ class PersistenceService:
             conn.commit()
         return self.get_run(forecast_run_id)
 
+    def record_run_failure(
+        self,
+        forecast_run_id: str,
+        failure_code: str,
+        failure_message: str,
+    ) -> ForecastRunDetail:
+        """Alias for mark_run_failed."""
+        return self.mark_run_failed(forecast_run_id, failure_code, failure_message)
+
     def get_run(self, forecast_run_id: str) -> ForecastRunDetail:
         """Fetches exhaustive run metadata or raises 404."""
         with self.get_connection() as conn:

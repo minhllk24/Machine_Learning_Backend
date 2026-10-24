@@ -12,6 +12,15 @@ router = APIRouter(tags=["Health & Lifecycle"])
 
 
 @router.get(
+    "/health",
+    summary="General Health Probe",
+    description="General health check endpoint for cloud load balancers and Render deployment health checks.",
+)
+async def get_general_health():
+    return {"status": "healthy", "service": "demand-forecasting-api"}
+
+
+@router.get(
     "/health/live",
     response_model=HealthLiveResponse,
     summary="Application Process Liveness Probe",

@@ -1,0 +1,24 @@
+# =====================================================================
+# Render Infrastructure-as-Code (IaC) Configuration
+# Retail Demand Forecasting & Inventory Planning Platform
+# =====================================================================
+
+services:
+  - type: web
+    name: retail-demand-forecasting-api
+    env: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: FORECAST_API_ENVIRONMENT
+        value: production
+      - key: FORECAST_API_DEBUG
+        value: false
+      - key: PYTHONPATH
+        value: .
+      - key: FORECAST_API_CORS_ORIGIN_REGEX
+        value: ^https://.*\.vercel\.app$
+      - key: FORECAST_API_JWT_SECRET_KEY
+        generateValue: true

@@ -3,8 +3,8 @@ Application configuration for the Demand Forecasting API & Backend Services.
 Uses Pydantic settings with strict validation and safe defaults.
 """
 from pathlib import Path
-from typing import List
-from pydantic import Field
+from typing import List, Optional, Any, Union
+from pydantic import Field, AliasChoices, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,15 +28,64 @@ class Settings(BaseSettings):
     # Server Bind & CORS
     HOST: str = "127.0.0.1"
     PORT: int = 8000
-    # Safe localhost origins only - never wildcard in production
-    CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:8000",
-    ]
+    # Safe localhost origins and dynamic Vercel frontend support
+    CORS_ORIGINS: Union[List[str], str] = Field(
+        default=[
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://localhost:8000",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+            "http://127.0.0.1:8000",
+        ],
+        validation_alias=AliasChoices("CORS_ORIGINS", "FORECAST_API_CORS_ORIGINS")
+    )
+    # Dynamic CORS origin regex to allow all Vercel previews and production deployments
+    CORS_ORIGIN_REGEX: Optional[str] = Field(
+        default=r"^https://.*\.vercel\.app$",
+        validation_alias=AliasChoices("CORS_ORIGIN_REGEX", "FORECAST_API_CORS_ORIGIN_REGEX"),
+        description="Regex matching Vercel frontend deployments"
+    )
+
+    @field_validator("CORS_ORIGINS", mode="after")
+    @classmethod
+    def assemble_cors_origins(cls, v: Any) -> List[str]:
+        if isinstance(v, str):
+            import json
+            try:
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return parsed
+            except Exception:
+                pass
+            return [i.strip() for i in v.split(",") if i.strip()]
+        return v
+
+    # MySQL Relational Database Configuration
+    MYSQL_HOST: str = Field(
+        default="127.0.0.1",
+        validation_alias=AliasChoices("MYSQL_HOST", "FORECAST_API_MYSQL_HOST")
+    )
+    MYSQL_PORT: int = Field(
+        default=3306,
+        validation_alias=AliasChoices("MYSQL_PORT", "FORECAST_API_MYSQL_PORT")
+    )
+    MYSQL_USER: str = Field(
+        default="root",
+        validation_alias=AliasChoices("MYSQL_USER", "FORECAST_API_MYSQL_USER")
+    )
+    MYSQL_PASSWORD: str = Field(
+        default="",
+        validation_alias=AliasChoices("MYSQL_PASSWORD", "FORECAST_API_MYSQL_PASSWORD")
+    )
+    MYSQL_DATABASE: str = Field(
+        default="online_retail_db",
+        validation_alias=AliasChoices("MYSQL_DATABASE", "FORECAST_API_MYSQL_DATABASE")
+    )
+    MYSQL_POOL_SIZE: int = Field(
+        default=5,
+        validation_alias=AliasChoices("MYSQL_POOL_SIZE", "FORECAST_API_MYSQL_POOL_SIZE")
+    )
 
     # JWT Authentication & Session Security (RFC 8725 & OWASP compliant)
     JWT_SECRET_KEY: str = Field(

@@ -252,7 +252,8 @@ def verify_all_tables():
         ("online_retail", "Dữ liệu thô từ Excel (2 sheet gộp lại)"),
         ("transactions", "Dữ liệu giao dịch đã làm sạch (Cleaned Transactions)"),
         ("sku_week_demand", "Bảng Panel nhu cầu theo tuần (Weekly SKU Demand)"),
-        ("forecast_predictions", "Kết quả dự báo mô hình Machine Learning")
+        ("forecast_predictions", "Kết quả dự báo mô hình Machine Learning"),
+        ("forecast_inventory_decisions", "Quyết định kế hoạch tồn kho & Cảnh báo rủi ro")
     ]
     
     for tbl, desc in tables:

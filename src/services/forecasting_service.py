@@ -11,7 +11,10 @@ from typing import Dict, List, Optional, Any, Tuple
 import uuid
 import numpy as np
 import pandas as pd
-import torch
+try:
+    import torch
+except ImportError:
+    torch = None
 
 from src.core.config import settings
 from src.core.logging_config import logger
@@ -31,8 +34,16 @@ from src.api.schemas.forecast import (
 from src.api.schemas.models import ServingStatus
 from src.services.model_registry import ModelRegistryService, registry_service
 from src.services.persistence_service import PersistenceService, persistence_service
-from src.models.sequence_dataset import PanelDataContainer, CALENDAR_COLUMNS
-from src.models.tide_sequence import TiDESequenceModel
+try:
+    from src.models.sequence_dataset import PanelDataContainer, CALENDAR_COLUMNS
+except Exception:
+    PanelDataContainer = None
+    CALENDAR_COLUMNS = []
+
+try:
+    from src.models.tide_sequence import TiDESequenceModel
+except Exception:
+    TiDESequenceModel = None
 from src.features import build_features_v1_2
 
 

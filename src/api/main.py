@@ -21,7 +21,7 @@ from src.api.errors import (
     starlette_http_exception_handler,
     unhandled_exception_handler,
 )
-from src.api.routes import health, models, forecasts, skus, dashboard, planning, auth
+from src.api.routes import health, models, forecasts, skus, dashboard, planning, auth, database
 
 
 @asynccontextmanager
@@ -66,10 +66,11 @@ def create_app() -> FastAPI:
         )
         return response
 
-    # 2. CORS Middleware - restricted strictly to safe local origins
+    # 2. CORS Middleware - supports local dev and dynamic Vercel deployments
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ORIGINS,
+        allow_origin_regex=settings.CORS_ORIGIN_REGEX,
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
@@ -92,6 +93,7 @@ def create_app() -> FastAPI:
     app.include_router(skus.router, prefix=settings.API_V1_STR)
     app.include_router(dashboard.router, prefix=settings.API_V1_STR)
     app.include_router(planning.router, prefix=settings.API_V1_STR)
+    app.include_router(database.router, prefix=settings.API_V1_STR)
 
     # 5. Serve Frontend SPA if built
     frontend_dist = settings.PROJECT_ROOT_PATH / "frontend" / "dist"
