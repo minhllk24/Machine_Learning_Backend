@@ -22,6 +22,7 @@ data/backend_storage/*.sqlite3
 data/backend_storage/*.db
 artifacts/exports/*
 !artifacts/exports/.gitkeep
+models_saved/
 
 # 3. Python Cache & Build Artifacts
 __pycache__/
