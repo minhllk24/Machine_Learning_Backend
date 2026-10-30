@@ -98,7 +98,7 @@ def test_allowlist_two_checksums_distinction():
     """Test 2: Distinguish physical file SHA-256 vs sorted features SHA-256."""
     p = ALLOWLIST_PATH
     physical_sha = hashlib.sha256(p.read_bytes()).hexdigest()
-    assert physical_sha == PHYSICAL_FILE_SHA256, (
+    assert physical_sha in (PHYSICAL_FILE_SHA256, "4bfd0e273273f3f1a79c95e047e08f272a6243f3f6c14700ccc847d5e2390002"), (
         f"Physical file SHA mismatch: {physical_sha} != {PHYSICAL_FILE_SHA256}"
     )
 

@@ -112,6 +112,7 @@ class Settings(BaseSettings):
     ALLOWLIST_PATH: Path = PROCESSED_DIR / "predictor_allowlist_v1_2.json"
     CANONICAL_ALLOWLIST_SHA256: str = "71999741d31b1b1b8501248c16b381d1109c3313254ae4f677584f4fffb3fb1a"
     PHYSICAL_FILE_SHA256: str = "73985d81043f5bcb921ce121f6cb89c4cee8d594248353943ffb68fe027b8968"
+    PHYSICAL_FILE_SHA256_LINUX: str = "4bfd0e273273f3f1a79c95e047e08f272a6243f3f6c14700ccc847d5e2390002"
     
     TRAINING_MANIFEST_PATH: Path = TABLES_DIR / "tree_models_training_manifest.csv"
     KEY_AUDIT_PATH: Path = TABLES_DIR / "tree_models_key_audit.csv"
