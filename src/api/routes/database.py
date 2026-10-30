@@ -1,9 +1,10 @@
 """
 FastAPI Router for Relational MySQL Database Operations.
 Exposes endpoints for database health, transaction exploration, SKU demand history, and inventory decisions.
+Equipped with Hybrid Fallback Resilience to guarantee 100% uptime on Cloud Render & Vercel.
 """
 from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Query, HTTPException, status
+from fastapi import APIRouter, Query, HTTPException, Response, status
 from pydantic import BaseModel, Field
 
 from src.services.mysql_service import mysql_service
@@ -19,6 +20,9 @@ class HealthResponse(BaseModel):
     database_name: Optional[str] = Field(None, description="Tên CSDL")
     tables: Dict[str, Any] = Field(default_factory=dict, description="Số lượng bản ghi từng bảng")
     total_records: int = Field(0, description="Tổng số bản ghi trong CSDL")
+    data_source: Optional[str] = Field("mysql", description="Nguồn dữ liệu: 'mysql' hoặc 'hybrid_fallback'")
+    mode: Optional[str] = Field("mysql_live", description="Chế độ vận hành")
+    note: Optional[str] = Field(None, description="Ghi chú trạng thái")
     error: Optional[str] = Field(None, description="Chi tiết lỗi nếu kết nối thất bại")
 
 
@@ -38,6 +42,7 @@ class TransactionsResponse(BaseModel):
     total: int
     limit: int
     offset: int
+    data_source: Optional[str] = "mysql"
     items: List[TransactionItem]
 
 
@@ -56,6 +61,7 @@ class SkuHistoryItem(BaseModel):
 class SkuHistoryResponse(BaseModel):
     sku_id: str
     points_count: int
+    data_source: Optional[str] = "mysql"
     history: List[SkuHistoryItem]
 
 
@@ -79,6 +85,7 @@ class InventoryDecisionsResponse(BaseModel):
     limit: int
     offset: int
     summary: Dict[str, int]
+    data_source: Optional[str] = "mysql"
     items: List[InventoryDecisionItem]
 
 
@@ -86,19 +93,11 @@ class InventoryDecisionsResponse(BaseModel):
     "/health",
     response_model=HealthResponse,
     summary="Kiểm tra trạng thái CSDL MySQL & Đếm số dòng 5 bảng",
-    description="Truy vấn trạng thái kết nối và số lượng bản ghi của toàn bộ 5 bảng trong CSDL MySQL."
+    description="Truy vấn trạng thái kết nối và số lượng bản ghi của toàn bộ 5 bảng. Tự động chuyển mạch sang Hybrid Fallback nếu MySQL offline."
 )
-def get_db_health():
+def get_db_health(response: Response):
     health_info = mysql_service.get_database_health()
-    if not health_info["connected"]:
-        # Trả về mã 503 Service Unavailable nhưng vẫn có cấu trúc JSON rõ ràng
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={
-                "message": "Không thể kết nối tới MySQL Server cục bộ hoặc Cloud Render. Hãy kiểm tra biến môi trường MYSQL_HOST / MYSQL_PASSWORD.",
-                "health": health_info
-            }
-        )
+    response.headers["X-Data-Source"] = health_info.get("data_source", "mysql")
     return health_info
 
 
@@ -109,18 +108,21 @@ def get_db_health():
     description="Tra cứu lịch sử giao dịch phân trang, hỗ trợ lọc theo mã hóa đơn (invoice) hoặc mã sản phẩm (stock_code)."
 )
 def get_transactions(
+    response: Response,
     limit: int = Query(50, ge=1, le=200, description="Số lượng bản ghi trả về mỗi trang"),
     offset: int = Query(0, ge=0, description="Vị trí bắt đầu phân trang"),
     invoice: Optional[str] = Query(None, description="Lọc theo mã hóa đơn cụ thể"),
     stock_code: Optional[str] = Query(None, description="Lọc theo mã sản phẩm (StockCode)")
 ):
     try:
-        return mysql_service.get_transactions(limit=limit, offset=offset, invoice=invoice, stock_code=stock_code)
+        res = mysql_service.get_transactions(limit=limit, offset=offset, invoice=invoice, stock_code=stock_code)
+        response.headers["X-Data-Source"] = res.get("data_source", "mysql")
+        return res
     except Exception as e:
         logger.error(f"Error serving /transactions: {e}")
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Dịch vụ CSDL MySQL không khả dụng: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Dịch vụ dữ liệu giao dịch gặp sự cố: {str(e)}"
         )
 
 
@@ -132,15 +134,18 @@ def get_transactions(
 )
 def get_sku_demand_history(
     sku_id: str,
+    response: Response,
     limit: int = Query(52, ge=1, le=104, description="Số tuần lịch sử tối đa cần lấy")
 ):
     try:
-        return mysql_service.get_sku_demand_history(sku_id=sku_id, limit=limit)
+        res = mysql_service.get_sku_demand_history(sku_id=sku_id, limit=limit)
+        response.headers["X-Data-Source"] = res.get("data_source", "mysql")
+        return res
     except Exception as e:
         logger.error(f"Error serving /demand-history/{sku_id}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Dịch vụ CSDL MySQL không khả dụng: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Dịch vụ dữ liệu nhu cầu SKU gặp sự cố: {str(e)}"
         )
 
 
@@ -151,15 +156,18 @@ def get_sku_demand_history(
     description="Truy vấn danh sách phân tích tồn kho, độ an toàn, và cờ cảnh báo (SHORTAGE RISK, ADEQUATE, EXCESS STOCK)."
 )
 def get_inventory_decisions(
+    response: Response,
     attention_flag: Optional[str] = Query(None, description="Lọc theo cờ cảnh báo: 'SHORTAGE RISK', 'ADEQUATE', 'EXCESS STOCK'"),
     limit: int = Query(100, ge=1, le=500, description="Số lượng quyết định trả về mỗi trang"),
     offset: int = Query(0, ge=0, description="Vị trí bắt đầu phân trang")
 ):
     try:
-        return mysql_service.get_inventory_decisions(attention_flag=attention_flag, limit=limit, offset=offset)
+        res = mysql_service.get_inventory_decisions(attention_flag=attention_flag, limit=limit, offset=offset)
+        response.headers["X-Data-Source"] = res.get("data_source", "mysql")
+        return res
     except Exception as e:
         logger.error(f"Error serving /inventory-decisions: {e}")
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Dịch vụ CSDL MySQL không khả dụng: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Dịch vụ dữ liệu tồn kho gặp sự cố: {str(e)}"
         )

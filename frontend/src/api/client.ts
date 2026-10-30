@@ -22,7 +22,7 @@ import {
   UserProfile,
 } from "../types/api";
 
-const API_BASE = "";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_API_URL as string) || "";
 
 class ApiError extends Error {
   status: number;

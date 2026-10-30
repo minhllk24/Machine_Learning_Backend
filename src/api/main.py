@@ -72,8 +72,10 @@ def create_app() -> FastAPI:
         allow_origins=settings.CORS_ORIGINS,
         allow_origin_regex=settings.CORS_ORIGIN_REGEX,
         allow_credentials=True,
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["*"],
+        expose_headers=["X-Process-Time-Ms", "X-Request-Id", "X-Data-Source"],
+        max_age=86400,
     )
 
     # 3. Centralized Exception Handlers
