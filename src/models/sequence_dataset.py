@@ -1,3 +1,4 @@
+from pathlib import Path
 """
 Sequence Dataset and Window Generator for Canonical Temporal Models.
 Retail SKU-Week Demand Forecasting & Inventory Planning.
@@ -136,9 +137,19 @@ class PanelDataContainer:
             piv_zero.values.astype(np.float32)
         ], axis=-1)  # (2785, 96, 4)
 
-        # 2. Load 10 calendar covariates from features parquet
-        df_feat = pd.read_parquet(self.features_parquet_path)
-        cal_df = df_feat[["target_week"] + CALENDAR_COLUMNS].drop_duplicates().set_index("target_week").reindex(self.weeks)
+        del piv_demand, piv_price, piv_txn, piv_cust, piv_zero, dev_demand
+        import gc
+        gc.collect()
+
+        # 2. Load 10 calendar covariates from compact 96-week CSV (if available) or selective Parquet columns
+        compact_cal = Path(self.features_parquet_path).parent / "calendar_covariates_96weeks.csv"
+        if compact_cal.exists():
+            cal_df = pd.read_csv(compact_cal).set_index("target_week").reindex(self.weeks)
+        else:
+            df_feat = pd.read_parquet(self.features_parquet_path, columns=["target_week"] + CALENDAR_COLUMNS)
+            cal_df = df_feat[["target_week"] + CALENDAR_COLUMNS].drop_duplicates().set_index("target_week").reindex(self.weeks)
+            del df_feat
+            gc.collect()
         self.cal_mat = cal_df.values.astype(np.float32)  # (96, 10)
 
     def get_cohort_sku_indices(self, cohort: str) -> np.ndarray:
