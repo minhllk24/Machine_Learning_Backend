@@ -30,6 +30,14 @@ class SKUService:
 
     def _ensure_initialized(self):
         if self._metadata_df is None:
+            summary_path = settings.DATA_DIR / 'processed' / 'sku_catalog_summary.csv'
+            if summary_path.exists():
+                logger.info(f'Loading precomputed SKU catalog from {summary_path}...')
+                self._metadata_df = pd.read_csv(summary_path, dtype={'sku_id': str})
+                self._sku_dict = {str(row['sku_id']): row.to_dict() for _, row in self._metadata_df.iterrows()}
+                logger.info(f'SKUService catalog indexed from precomputed summary: {len(self._sku_dict)} SKUs.')
+                return
+
             if self._panel is None:
                 self._panel = PanelDataContainer()
 
@@ -193,7 +201,10 @@ class SKUService:
         if not data:
             raise SKUNotFoundException(sku_id)
 
-        idx = data["matrix_index"]
+        if self._panel is None:
+            self._panel = PanelDataContainer()
+
+        idx = int(data["matrix_index"])
         panel = self._panel
 
         d_row = panel.demand_mat[idx]
