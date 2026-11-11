@@ -102,21 +102,33 @@ class DemandForecastingApp(QMainWindow):
 
     def check_initial_data_source(self):
         """Kiểm tra kết nối MySQL ban đầu để chọn nguồn dữ liệu mặc định."""
+        conn = None
+        cursor = None
+        cnt = 0
         try:
             conn = get_mysql_connection()
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM forecast_inventory_decisions;")
             cnt = cursor.fetchone()[0]
-            cursor.close()
-            conn.close()
-            if cnt > 0:
-                self.mysql_available = True
-                self.radio_mysql.setChecked(True)
-                self.statusBar().showMessage(f"Đã kết nối CSDL MySQL (online_retail_db) — Bảng tồn kho có {cnt:,} dòng", 5000)
-                self.load_skus_from_source()
-                return
         except Exception as e:
-            logger.warning(f"Initial MySQL check failed ({e}), falling back to offline mode.")
+            logger.warning(f"Initial MySQL check failed ({type(e).__name__}), falling back to offline mode.")
+        finally:
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception:
+                    pass
+            if conn is not None:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+        if cnt > 0:
+            self.mysql_available = True
+            self.radio_mysql.setChecked(True)
+            self.statusBar().showMessage(f"Đã kết nối CSDL MySQL (online_retail_db) — Bảng tồn kho có {cnt:,} dòng", 5000)
+            self.load_skus_from_source()
+            return
 
         self.mysql_available = False
         self.radio_offline.setChecked(True)
@@ -145,23 +157,36 @@ class DemandForecastingApp(QMainWindow):
     def on_source_changed(self):
         """Xử lý khi người dùng thay đổi chế độ nguồn dữ liệu."""
         if self.radio_mysql.isChecked():
+            conn = None
+            cursor = None
             try:
                 conn = get_mysql_connection()
                 cursor = conn.cursor()
                 cursor.execute("SELECT 1;")
                 cursor.fetchone()
-                cursor.close()
-                conn.close()
                 self.mysql_available = True
                 self.statusBar().showMessage("Chế độ: Kết nối trực tiếp CSDL MySQL (online_retail_db)", 4000)
             except Exception as e:
+                logger.warning("MySQL connection check failed: %s", e)
+                self.mysql_available = False
                 QMessageBox.warning(
                     self,
                     "Lỗi Kết nối MySQL",
-                    f"Không thể kết nối MySQL: {e}\n\nVui lòng kiểm tra dịch vụ MySQL80 hoặc cấu hình file .env."
+                    "Không thể kết nối cơ sở dữ liệu MySQL.\n\nVui lòng kiểm tra dịch vụ MySQL80 hoặc cấu hình file .env."
                 )
                 self.radio_offline.setChecked(True)
                 return
+            finally:
+                if cursor is not None:
+                    try:
+                        cursor.close()
+                    except Exception:
+                        pass
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
         else:
             if self.predictions_df is None or self.history_df is None:
                 self.load_offline_data()
@@ -174,16 +199,27 @@ class DemandForecastingApp(QMainWindow):
         """Nạp danh sách SKU vào ComboBox theo nguồn dữ liệu hiện hành."""
         skus: List[str] = []
         if self.radio_mysql.isChecked() and self.mysql_available:
+            conn = None
+            cursor = None
             try:
                 conn = get_mysql_connection()
                 cursor = conn.cursor()
                 cursor.execute("SELECT DISTINCT sku_id FROM forecast_inventory_decisions ORDER BY sku_id ASC LIMIT 150;")
                 rows = cursor.fetchall()
                 skus = [str(r[0]) for r in rows]
-                cursor.close()
-                conn.close()
             except Exception as e:
                 logger.error(f"Error fetching SKUs from MySQL: {e}")
+            finally:
+                if cursor is not None:
+                    try:
+                        cursor.close()
+                    except Exception:
+                        pass
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
 
         if not skus:
             if self.predictions_df is not None:
@@ -337,20 +373,31 @@ class DemandForecastingApp(QMainWindow):
             return
 
         if self.radio_mysql.isChecked() and self.mysql_available:
+            conn = None
+            cursor = None
             try:
                 conn = get_mysql_connection()
                 cursor = conn.cursor(dictionary=True)
                 cursor.execute(
-                    "SELECT simulated_current_stock FROM forecast_inventory_decisions WHERE sku_id = %s ORDER BY forecast_week_start DESC LIMIT 1;",
-                    (sku,)
+                    "SELECT simulated_current_stock FROM forecast_inventory_decisions WHERE sku_id = %s AND CAST(sku_id AS BINARY) = CAST(%s AS BINARY) ORDER BY forecast_week_start DESC LIMIT 1;",
+                    (sku, sku)
                 )
                 row = cursor.fetchone()
                 if row and row.get("simulated_current_stock") is not None:
                     self.stock_spin.setValue(int(row["simulated_current_stock"]))
-                cursor.close()
-                conn.close()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to fetch stock on SKU change: %s", e)
+            finally:
+                if cursor is not None:
+                    try:
+                        cursor.close()
+                    except Exception:
+                        pass
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
 
         self.calculate_prediction()
 
@@ -381,6 +428,8 @@ class DemandForecastingApp(QMainWindow):
 
         # 1. Truy vấn MySQL nếu ở chế độ MySQL
         if self.radio_mysql.isChecked() and self.mysql_available:
+            conn = None
+            cursor = None
             try:
                 conn = get_mysql_connection()
                 cursor = conn.cursor(dictionary=True)
@@ -389,24 +438,38 @@ class DemandForecastingApp(QMainWindow):
                     SELECT predicted_demand_catboost, lower_bound_90, upper_bound_90,
                            safety_buffer, projected_requirement, attention_flag, suggested_order_qty
                     FROM forecast_inventory_decisions
-                    WHERE sku_id = %s
+                    WHERE sku_id = %s AND CAST(sku_id AS BINARY) = CAST(%s AS BINARY)
                     ORDER BY forecast_week_start DESC
                     LIMIT 1;
                     """,
-                    (sku,)
+                    (sku, sku)
                 )
                 row = cursor.fetchone()
                 if row:
-                    pred_demand = float(row.get("predicted_demand_catboost") or 50.0)
-                    lower_90 = float(row.get("lower_90") or max(0.0, pred_demand - 15.0))
-                    upper_90 = float(row.get("upper_90") or pred_demand + 15.0)
-                    safety_buffer = float(row.get("safety_buffer") or 15.0) * (z / 1.282)
+                    raw_pred = row.get("predicted_demand_catboost")
+                    pred_demand = float(raw_pred) if raw_pred is not None else 50.0
+                    raw_lower = row.get("lower_bound_90")
+                    lower_90 = float(raw_lower) if raw_lower is not None else max(0.0, pred_demand - 15.0)
+                    raw_upper = row.get("upper_bound_90")
+                    upper_90 = float(raw_upper) if raw_upper is not None else pred_demand + 15.0
+                    raw_buffer = row.get("safety_buffer")
+                    base_buffer = float(raw_buffer) if raw_buffer is not None else 15.0
+                    safety_buffer = base_buffer * (z / 1.282)
                     db_flag = row.get("attention_flag")
                     db_suggested_qty = row.get("suggested_order_qty")
-                cursor.close()
-                conn.close()
             except Exception as e:
                 logger.error(f"Error fetching inventory record from MySQL: {e}")
+            finally:
+                if cursor is not None:
+                    try:
+                        cursor.close()
+                    except Exception:
+                        pass
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
 
         # 2. Truy vấn Offline nếu không có dữ liệu MySQL
         elif self.predictions_df is not None:
@@ -477,20 +540,31 @@ class DemandForecastingApp(QMainWindow):
         history_y = []
         # Truy vấn lịch sử từ MySQL
         if self.radio_mysql.isChecked() and self.mysql_available:
+            conn = None
+            cursor = None
             try:
                 conn = get_mysql_connection()
                 cursor = conn.cursor(dictionary=True)
                 cursor.execute(
-                    "SELECT demand FROM sku_week_demand WHERE sku_id = %s ORDER BY week_start DESC LIMIT 16;",
-                    (sku,)
+                    "SELECT demand FROM sku_week_demand WHERE sku_id = %s AND CAST(sku_id AS BINARY) = CAST(%s AS BINARY) ORDER BY week_start DESC LIMIT 16;",
+                    (sku, sku)
                 )
                 rows = cursor.fetchall()
                 if rows:
-                    history_y = [r["demand"] for r in reversed(rows)]
-                cursor.close()
-                conn.close()
+                    history_y = [float(r["demand"]) for r in reversed(rows) if r.get("demand") is not None]
             except Exception as e:
                 logger.warning(f"Failed to fetch plot history from MySQL: {e}")
+            finally:
+                if cursor is not None:
+                    try:
+                        cursor.close()
+                    except Exception:
+                        pass
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
 
         # Fallback offline
         if not history_y and self.history_df is not None:

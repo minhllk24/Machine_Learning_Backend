@@ -243,7 +243,7 @@ class MySQLService:
 
     def get_sku_demand_history(self, sku_id: str, limit: int = 52) -> Dict[str, Any]:
         """Lấy chuỗi thời gian nhu cầu lịch sử theo tuần của SKU."""
-        limit = min(max(1, limit), 104)
+        limit = min(max(1, limit), 200)
         clean_sku = sku_id.strip()
 
         is_connected, _ = self.check_connection()
@@ -256,16 +256,20 @@ class MySQLService:
                 SELECT sku_id, week_start, demand, avg_unit_price, transaction_count,
                        unique_customer_count, total_revenue, zero_demand_flag, is_active
                 FROM sku_week_demand
-                WHERE sku_id = %s
-                ORDER BY week_start ASC
+                WHERE sku_id = %s AND CAST(sku_id AS BINARY) = CAST(%s AS BINARY)
+                ORDER BY week_start DESC
                 LIMIT %s;
                 """
-                cursor.execute(query, (clean_sku, limit))
+                cursor.execute(query, (clean_sku, clean_sku, limit))
                 records = cursor.fetchall()
+                records.reverse()
 
                 for rec in records:
-                    if rec.get("week_start"):
+                    if rec.get("week_start") is not None:
                         rec["week_start"] = str(rec["week_start"])
+                    for dec_col in ("avg_unit_price", "total_revenue", "min_price", "max_price"):
+                        if rec.get(dec_col) is not None:
+                            rec[dec_col] = float(rec[dec_col])
 
                 return {
                     "sku_id": clean_sku,
@@ -341,12 +345,16 @@ class MySQLService:
             with get_db_cursor(dictionary=True) as cursor:
                 # Thống kê tổng quan theo cờ cảnh báo
                 cursor.execute("SELECT attention_flag, COUNT(*) as count FROM forecast_inventory_decisions GROUP BY attention_flag;")
-                summary_stats = {row["attention_flag"]: row["count"] for row in cursor.fetchall()}
+                summary_stats = {
+                    row["attention_flag"]: int(row["count"])
+                    for row in cursor.fetchall()
+                    if row.get("attention_flag") is not None
+                }
 
                 # Đếm tổng bản ghi thỏa bộ lọc
                 count_sql = f"SELECT COUNT(*) as total FROM forecast_inventory_decisions {where_sql};"
                 cursor.execute(count_sql, tuple(params))
-                total = cursor.fetchone()["total"]
+                total = int(cursor.fetchone()["total"])
 
                 # Lấy danh sách quyết định
                 query_sql = f"""
@@ -364,11 +372,25 @@ class MySQLService:
                 items = cursor.fetchall()
 
                 for item in items:
-                    if item.get("forecast_week_start"):
+                    if item.get("forecast_week_start") is not None:
                         item["forecast_week_start"] = str(item["forecast_week_start"])
-                    for dec_col in ["predicted_demand_lgbm", "predicted_demand_catboost", "lower_bound_90", "upper_bound_90", "safety_buffer", "projected_requirement"]:
+                    for dec_col in (
+                        "predicted_demand_lgbm",
+                        "predicted_demand_catboost",
+                        "lower_bound_90",
+                        "upper_bound_90",
+                        "safety_buffer",
+                        "projected_requirement",
+                    ):
                         if item.get(dec_col) is not None:
                             item[dec_col] = float(item[dec_col])
+                    for int_col in (
+                        "actual_demand",
+                        "simulated_current_stock",
+                        "suggested_order_qty",
+                    ):
+                        if item.get(int_col) is not None:
+                            item[int_col] = int(item[int_col])
 
                 return {
                     "total": total,

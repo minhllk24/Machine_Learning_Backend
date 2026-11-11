@@ -4,9 +4,11 @@ Provides SQLite database integration and MySQL-compatible DDL schemas
 to satisfy the relational database deliverable (Deliverable 2).
 """
 import sqlite3
+import threading
 import pandas as pd
 from pathlib import Path
 from src.config import DATA_DIR, TABLES_DIR, logger
+from src.core.config import PROJECT_ROOT, settings
 
 DB_PATH = DATA_DIR / "inventory_forecasting.db"
 SQL_SCHEMA_PATH = TABLES_DIR / "schema.sql"
@@ -103,32 +105,34 @@ def populate_sqlite_db(df_cleaned=None, panel_df=None, test_predictions=None):
 
 
 _mysql_pool = None
+_pool_lock = threading.Lock()
 
 
 def get_mysql_pool():
     """Khởi tạo và trả về MySQLConnectionPool tái sử dụng kết nối."""
     global _mysql_pool
     if _mysql_pool is None:
-        from mysql.connector import pooling
-        from src.core.config import settings
-        _mysql_pool = pooling.MySQLConnectionPool(
-            pool_name="retail_pool",
-            pool_size=settings.MYSQL_POOL_SIZE,
-            pool_reset_session=True,
-            host=settings.MYSQL_HOST,
-            port=settings.MYSQL_PORT,
-            user=settings.MYSQL_USER,
-            password=settings.MYSQL_PASSWORD,
-            database=settings.MYSQL_DATABASE,
-        )
-        logger.info(f"MySQL Connection Pool 'retail_pool' initialized (size={settings.MYSQL_POOL_SIZE}).")
+        with _pool_lock:
+            if _mysql_pool is None:
+                from mysql.connector import pooling
+                _mysql_pool = pooling.MySQLConnectionPool(
+                    pool_name="retail_pool",
+                    pool_size=settings.MYSQL_POOL_SIZE,
+                    pool_reset_session=True,
+                    host=settings.MYSQL_HOST,
+                    port=settings.MYSQL_PORT,
+                    user=settings.MYSQL_USER,
+                    password=settings.MYSQL_PASSWORD,
+                    database=settings.MYSQL_DATABASE,
+                    connection_timeout=3,
+                )
+                logger.info(f"MySQL Connection Pool 'retail_pool' initialized (size={settings.MYSQL_POOL_SIZE}).")
     return _mysql_pool
 
 
 def get_mysql_connection():
     """Lấy connection từ connection pool hoặc tạo kết nối trực tiếp nếu pool lỗi."""
     import mysql.connector
-    from src.core.config import settings
     try:
         pool = get_mysql_pool()
         return pool.get_connection()

@@ -112,6 +112,10 @@ ANTIGRAVITY_*
 read_docx*.py
 read_pdfs.py
 
+# 9. Course Syllabus & Reference Documentation
+docs/
+
+
 
 # Allow benchmark metric tables and panel data essential for API serving
 !artifacts/tables/
